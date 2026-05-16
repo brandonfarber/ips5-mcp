@@ -1,0 +1,16 @@
+---
+description: Use ips5-mcp tools and site agent guide for Invision Community questions
+alwaysApply: true
+---
+
+# ips5-mcp (Invision Community)
+
+When the user asks about the live community (forums, members, commerce, packages, internal terms):
+
+1. Read **[docs/agent-guide.md](../docs/agent-guide.md)** or call MCP tool **`ips_read_agent_guide`** for glossary and recipes.
+2. Use **`ips_list_endpoints`** to find the right `ips_*` tool; avoid guessing among 200+ tools.
+3. Prefer named endpoint tools over **`ips_api_call`** unless the path is undocumented.
+
+Site-specific terms (e.g. “wins”, product nicknames) are defined in **`docs/agent-guide.md`** — update that file when jargon changes.
+
+After changing `.env` or rebuilding (`npm run build`), reload MCP in Cursor (Settings → Tools & MCP).

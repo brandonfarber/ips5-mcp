@@ -3,6 +3,8 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 import { getServerInfo } from './config.js';
+import { loadMcpInstructions } from './docs/loader.js';
+import { registerDocumentation } from './docs/register.js';
 import { registerAllIpsTools } from './tools/register.js';
 
 /**
@@ -12,8 +14,12 @@ export async function runMcpServer(): Promise<void> {
   loadDotenv();
 
   const { name, version } = getServerInfo();
-  const server = new McpServer({ name, version });
+  const server = new McpServer(
+    { name, version },
+    { instructions: loadMcpInstructions() },
+  );
 
+  registerDocumentation(server);
   registerAllIpsTools(server);
 
   const transport = new StdioServerTransport();

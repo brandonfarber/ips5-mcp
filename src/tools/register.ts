@@ -24,7 +24,7 @@ function registerMetaTools(server: McpServer): void {
     'ips_list_endpoints',
     {
       description:
-        'List IPS REST API endpoints available as MCP tools (from invision5 codebase catalog). Filter by app, HTTP method, or search text.',
+        'Discover IPS REST tools: filter by app (core, forums, nexus), HTTP method, or search text. Use after ips_read_agent_guide when the user uses site-specific terms. Returns toolName to call next.',
       inputSchema: z.object({
         app: z
           .string()
@@ -72,7 +72,7 @@ function registerMetaTools(server: McpServer): void {
     'ips_api_call',
     {
       description:
-        'Call any IPS REST API path directly (GET/POST/PUT/DELETE). Path is relative to /api, e.g. /core/members/1. POST/PUT use form-urlencoded body. Prefer specific ips_* tools when possible.',
+        'Fallback: call any IPS REST path under /api (method, path, query, body). Prefer ips_read_agent_guide + ips_list_endpoints + a named ips_* tool when possible. POST/PUT use form-urlencoded body.',
       inputSchema: z.object({
         method: z.enum(['GET', 'POST', 'PUT', 'DELETE']),
         path: z

@@ -41,10 +41,30 @@ This updates `src/ips/endpoints.json` from `applications/*/api/*.php` docblocks.
 | `npm test` | Jest tests |
 | `npm run extract-endpoints` | Regenerate `endpoints.json` from invision5 |
 
+## Agent documentation
+
+Teach AI clients your community’s language (forum names, “wins”, packages, etc.):
+
+| File | Who edits it |
+|------|----------------|
+| **[`docs/agent-guide.md`](docs/agent-guide.md)** | **You** — glossary, forum map, recipes (`<!-- TODO -->` sections) |
+| [`docs/recipes.md`](docs/recipes.md) | Optional extra examples |
+| [`docs/mcp-instructions.md`](docs/mcp-instructions.md) | Short MCP-wide instructions (usually leave as-is) |
+| [`AGENTS.md`](AGENTS.md) | Index for agents working in this repo |
+
+Exposed to MCP clients as:
+
+- Server **`instructions`** (from `docs/mcp-instructions.md`)
+- Tool **`ips_read_agent_guide`**
+- Resource **`ips5://docs/agent-guide`**
+
+Restart MCP after editing docs.
+
 ## MCP tools
 
 | Tool | Purpose |
 | ---- | ------- |
+| `ips_read_agent_guide` | Site glossary + recipes (`docs/agent-guide.md`) |
 | `core_hello` | Backward-compatible alias for GET `/core/hello` |
 | `ips_get_core_hello` | Same as above (catalog name) |
 | `ips_list_endpoints` | Search/filter the endpoint catalog |
@@ -62,8 +82,13 @@ Project config: **`.cursor/mcp.json`** (stdio + `envFile` → `.env`). Enable **
 ## Layout
 
 ```
+docs/
+  agent-guide.md      # site glossary + recipes (maintainer-edited)
+  mcp-instructions.md # MCP server instructions
+  recipes.md          # optional extra recipes
 src/
   index.ts, server.ts, config.ts, env.ts
+  docs/               # loads docs/*.md at runtime
   ips/
     client.ts       # HTTP client (Basic auth, form bodies)
     catalog.ts      # loads endpoints.json
