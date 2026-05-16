@@ -13,7 +13,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "extract-endpoints": "node scripts/extract-endpoints.mjs"
   },
   "keywords": [
     "mcp",

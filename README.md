@@ -1,67 +1,80 @@
 # ips5-mcp
 
-Stub [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for **Invision Community 5** via its [REST API](https://invisioncommunity.com/developers/). This repository is scaffolded for a future layer of MCP tools that call your community endpoints.
+[MCP](https://modelcontextprotocol.io/) server for **Invision Community 5** [REST API](https://invisioncommunity.com/__old/buy/developers/rest-api/index/). Exposes **229 endpoint-specific tools** (from the `invision5` codebase) plus discovery and generic call helpers.
 
 ## Prerequisites
 
 - Node.js 18+
 - npm
+- IPS5 community with REST API key (ACP → System → REST & OAuth)
 
 ## Setup
 
 ```bash
 npm install
 cp .env.example .env
-# Set IPS5_BASE_URL (community root, with optional subpath) and IPS5_API_KEY.
+# Set IPS5_BASE_URL (community root, optional subpath) and IPS5_API_KEY
+npm run build
 ```
 
-Environment variables are read when the process starts (`dotenv` loads `.env` from the project directory). **After you create or change `.env`, restart the MCP server** (stop and run `npm start` again, or reload the MCP entry in Cursor). If you inject `IPS5_*` in your MCP client `env` block instead, you do not need a `.env` file; still restart after changing those values.
+Environment variables load at process start via `dotenv` (`.env` in project root) or Cursor `envFile` in `.cursor/mcp.json`. **Restart the MCP server after changing `.env`.**
+
+### Regenerate endpoint catalog
+
+When IPS adds or changes API controllers, re-scan `invision5`:
+
+```bash
+npm run extract-endpoints
+# or: node scripts/extract-endpoints.mjs c:/wamp/www/invision5
+npm run build
+```
+
+This updates `src/ips/endpoints.json` from `applications/*/api/*.php` docblocks.
 
 ## Scripts
 
-| Script   | Description                                      |
-| -------- | ------------------------------------------------ |
-| `npm run build` | Compile TypeScript to `dist/`               |
-| `npm start`     | Run compiled server (stdio MCP transport) |
-| `npm run dev`   | Run from `src/` with `tsx` watch            |
-| `npm test`      | Jest unit tests                             |
+| Script | Description |
+| ------ | ----------- |
+| `npm run build` | Compile TypeScript → `dist/` |
+| `npm start` | Run MCP server (stdio) |
+| `npm run dev` | Watch `src/` with tsx |
+| `npm test` | Jest tests |
+| `npm run extract-endpoints` | Regenerate `endpoints.json` from invision5 |
 
-## MCP client configuration (Cursor)
+## MCP tools
 
-This repo includes **`.cursor/mcp.json`**, which Cursor loads automatically for this workspace (merged with your user `~/.cursor/mcp.json` if you have one). After `npm run build`, open **Settings → Tools & MCP** and ensure **ips5-mcp** is enabled.
+| Tool | Purpose |
+| ---- | ------- |
+| `core_hello` | Backward-compatible alias for GET `/core/hello` |
+| `ips_get_core_hello` | Same as above (catalog name) |
+| `ips_list_endpoints` | Search/filter the endpoint catalog |
+| `ips_api_call` | Arbitrary REST call (`method`, `path`, `query`, `body`) |
+| `ips_{method}_{app}_...` | One tool per documented endpoint (229 total) |
 
-Secrets stay in **`.env`** (gitignored); the MCP entry uses `envFile` so you do not paste keys into `mcp.json`.
+Example tool names: `ips_get_forums_topics`, `ips_post_core_members`, `ips_delete_blog_comments_id`.
 
-To configure manually or for another client, use the same shape:
+Path parameters are tool arguments (e.g. `id` for `/forums/topics/{id}`). Optional `query` and `body` objects map to query string and form body (IPS uses `application/x-www-form-urlencoded` for POST/PUT).
 
-```json
-{
-  "mcpServers": {
-    "ips5-mcp": {
-      "command": "node",
-      "args": ["c:/wamp/www/ips5-mcp/dist/index.js"],
-      "env": {
-        "IPS5_BASE_URL": "https://your-community.example.com",
-        "IPS5_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
+## Cursor configuration
 
-Adjust the path for your machine. Ensure the API key is allowed to access **GET /core/hello** in ACP → REST & OAuth → API Keys.
-
-### Tool: `core_hello`
-
-Calls `GET /api/core/hello` and returns JSON (`communityName`, `communityUrl`, `ipsVersion`).
+Project config: **`.cursor/mcp.json`** (stdio + `envFile` → `.env`). Enable **ips5-mcp** under Settings → Tools & MCP, then reload after `npm run build`.
 
 ## Layout
 
-- `src/index.ts` — process entry (`bin` target)
-- `src/server.ts` — MCP stdio server and tool registration
-- `src/env.ts` — reads `IPS5_*` from `process.env`
-- `src/config.ts` — server name/version and REST `User-Agent`
-- `src/ips/client.ts` — IPS REST client (`getCoreHello`, generic `request`)
+```
+src/
+  index.ts, server.ts, config.ts, env.ts
+  ips/
+    client.ts       # HTTP client (Basic auth, form bodies)
+    catalog.ts      # loads endpoints.json
+    path.ts         # path/query helpers
+    endpoints.json  # generated catalog
+  tools/
+    factory.ts      # per-endpoint tool registration
+    register.ts     # meta tools + register all endpoints
+scripts/
+  extract-endpoints.mjs
+```
 
 ## Issue log
 

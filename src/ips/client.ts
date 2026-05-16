@@ -1,20 +1,26 @@
 import { USER_AGENT } from '../config.js';
+import { buildQueryString, encodeFormBody, resolveApiPath } from './path.js';
+import type { IpsEndpoint } from './catalog.js';
 
-/**
- * Successful JSON body from `GET /api/core/hello`.
- * @see https://invisioncommunity.com/developers/rest-api
- */
 export type IpsCoreHelloResponse = {
   communityName: string;
   communityUrl: string;
   ipsVersion: string;
+  ipsApplications?: Record<string, string>;
 };
 
 export type IpsRestClientOptions = {
-  /** Community root URL (may include subpath), e.g. https://forum.example.com or https://example.com/ips */
   baseUrl: string;
-  /** API key from ACP → REST & OAuth (HTTP Basic username, empty password) */
   apiKey: string;
+};
+
+export type IpsCallOptions = {
+  method: string;
+  /** REST path under /api, e.g. /core/members or /core/members/123 */
+  path: string;
+  pathParams?: Record<string, string | number>;
+  query?: Record<string, string | number | boolean>;
+  body?: Record<string, unknown>;
 };
 
 export function normalizeCommunityBaseUrl(baseUrl: string): string {
@@ -24,10 +30,6 @@ export function normalizeCommunityBaseUrl(baseUrl: string): string {
 export class IpsRestClient {
   constructor(private readonly options: IpsRestClientOptions) {}
 
-  /**
-   * Authenticated request to the IPS REST API (`{base}/api/...`).
-   * Uses HTTP Basic auth: username = API key, password empty (IPS docs).
-   */
   async request(method: string, path: string, init?: RequestInit): Promise<Response> {
     const base = normalizeCommunityBaseUrl(this.options.baseUrl);
     const rel = path.startsWith('/') ? path : `/${path}`;
@@ -43,20 +45,79 @@ export class IpsRestClient {
     return fetch(url, { ...init, method, headers });
   }
 
-  /** `GET /api/core/hello` — connectivity check; returns community metadata. */
-  async getCoreHello(): Promise<IpsCoreHelloResponse> {
-    const res = await this.request('GET', '/core/hello');
+  async requestJson<T = unknown>(options: IpsCallOptions): Promise<T> {
+    const pathParams = options.pathParams ?? {};
+    const resolvedPath =
+      Object.keys(pathParams).length > 0
+        ? resolveApiPath(options.path, pathParams)
+        : options.path;
+    const query = options.query ?? {};
+    const queryString = buildQueryString(query);
+    const urlPath = `${resolvedPath}${queryString}`;
+
+    const method = options.method.toUpperCase();
+    let init: RequestInit | undefined;
+
+    if (method === 'POST' || method === 'PUT') {
+      const body = options.body ?? {};
+      init = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeFormBody(body),
+      };
+    } else if (method === 'DELETE' && options.body && Object.keys(options.body).length > 0) {
+      init = {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeFormBody(options.body),
+      };
+    }
+
+    const res = await this.request(method, urlPath, init);
     const bodyText = await res.text();
+
     if (!res.ok) {
       throw new Error(formatIpsError(res.status, bodyText));
     }
-    let parsed: unknown;
+
+    if (!bodyText) {
+      return {} as T;
+    }
+
     try {
-      parsed = JSON.parse(bodyText) as unknown;
+      return JSON.parse(bodyText) as T;
     } catch {
       throw new Error(`IPS REST ${res.status}: non-JSON body: ${truncate(bodyText)}`);
     }
-    return parsed as IpsCoreHelloResponse;
+  }
+
+  /** Call a catalogued endpoint definition. */
+  async callEndpoint(
+    endpoint: IpsEndpoint,
+    args: {
+      pathParams?: Record<string, string | number>;
+      query?: Record<string, string | number | boolean>;
+      body?: Record<string, unknown>;
+    },
+  ): Promise<unknown> {
+    const pathParams: Record<string, string | number> = { ...(args.pathParams ?? {}) };
+    for (const key of endpoint.pathParams) {
+      if (pathParams[key] === undefined) {
+        throw new Error(`Missing required path parameter: ${key}`);
+      }
+    }
+    return this.requestJson({
+      method: endpoint.method,
+      path: endpoint.path,
+      pathParams,
+      query: args.query,
+      body: args.body,
+    });
+  }
+
+  async getCoreHello(): Promise<IpsCoreHelloResponse> {
+    return this.requestJson<IpsCoreHelloResponse>({
+      method: 'GET',
+      path: '/core/hello',
+    });
   }
 }
 
@@ -64,7 +125,7 @@ function truncate(s: string, max = 500): string {
   return s.length <= max ? s : `${s.slice(0, max)}…`;
 }
 
-function formatIpsError(status: number, bodyText: string): string {
+export function formatIpsError(status: number, bodyText: string): string {
   try {
     const o = JSON.parse(bodyText) as { errorMessage?: string; errorCode?: string };
     if (o.errorMessage) {
