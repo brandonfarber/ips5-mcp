@@ -4,9 +4,9 @@
 
 ## Site overview
 
-Kopywriting.com (formerly also known as CopywritingCourse.com and KopywritingKourse.com) is a community platform where users seek assistance and advice writing copy for blog posts, emails, advertising, SEO, and other similar channels.
+<!-- TODO -->
 
-- **Community URL:** (from `IPS5_BASE_URL`, e.g. `https://kopywriting.com/`)
+- **Community URL:** (from `IPS5_BASE_URL`)
 - **Primary apps:** core, forums, nexus (commerce), CMS, blogs
 
 ## Glossary
@@ -15,7 +15,7 @@ Map **member language** → **what to query**. Agents should look here before pi
 
 | Term / phrase | Meaning on this site | Hints (forum ID, tag, app, package) |
 |---------------|----------------------|-------------------------------------|
-| wins | Success stories in the forums - while a separate "wins" application exists, it currently has no REST API functionality and as such is not available via the MCP | `ips_get_core_search`, q=win |
+| <!-- TODO --> | | |
 
 ### Forum map (optional)
 
@@ -54,8 +54,6 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
   }
   ```
 - **Response:** `results[].title`, `firstPost.date`, `forum.name`
-
-<!-- TODO: add recipe for "wins" once glossary row is filled -->
 
 ### Forums — topics in one board
 
