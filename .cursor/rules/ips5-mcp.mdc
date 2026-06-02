@@ -13,4 +13,6 @@ When the user asks about the live community (forums, members, commerce, packages
 
 Site-specific terms (e.g. “wins”, product nicknames) are defined in **`docs/agent-guide.md`** — update that file when jargon changes.
 
+When creating raw HTML CMS pages through the Copywriting Course page API, default **Use Suite HTML wrapper** to yes by setting `body.ipb_wrapper` to `true`, unless the user explicitly asks for no wrapper.
+
 After changing `.env` or rebuilding (`npm run build`), reload MCP in Cursor (Settings → Tools & MCP).

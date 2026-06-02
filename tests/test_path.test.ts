@@ -26,4 +26,10 @@ describe('encodeFormBody', () => {
   test('encodes form fields', () => {
     expect(encodeFormBody({ title: 'Hi', page: 1 })).toBe('title=Hi&page=1');
   });
+
+  test('encodes boolean form fields as IPS-compatible integers', () => {
+    expect(encodeFormBody({ ipb_wrapper: true, meta_index: false })).toBe(
+      'ipb_wrapper=1&meta_index=0',
+    );
+  });
 });

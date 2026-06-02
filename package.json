@@ -14,7 +14,8 @@
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "extract-endpoints": "node scripts/extract-endpoints.mjs"
+    "extract-endpoints": "tsx scripts/extract-endpoints.mjs",
+    "refresh-tool-names": "tsx scripts/refresh-tool-names.mjs"
   },
   "keywords": [
     "mcp",

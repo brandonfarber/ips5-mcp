@@ -10,6 +10,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { buildToolName } from '../src/ips/tool-name.ts';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
 const defaultIpsRoot = path.resolve(repoRoot, '..', 'invision5');
@@ -17,7 +19,7 @@ const ipsRoot = path.resolve(process.argv[2] ?? defaultIpsRoot);
 const outFile = path.join(repoRoot, 'src', 'ips', 'endpoints.json');
 
 const ROUTE_LINE = /^\s*\*\s*(GET|POST|PUT|DELETE)\s+(\/[^\s*]+)/;
-const API_PARAM = /^\s*\*\s*@apiparam\s+/;
+const API_PARAM = /^\s*\*\s*@(reqapiparam|apiparam)\s+/;
 const API_MEMBER = /^\s*\*\s*@apimemberonly\b/;
 const API_CLIENT = /^\s*\*\s*@apiclientonly\b/;
 
@@ -56,12 +58,13 @@ function parseApiFile(filePath, app, controller) {
       const paramMatch = line.match(API_PARAM);
       if (paramMatch) {
         const rest = line.replace(API_PARAM, '').trim();
-        const parts = rest.split(/\t+/).map((p) => p.trim()).filter(Boolean);
+        const parts = rest.split(/\s+/).map((p) => p.trim()).filter(Boolean);
         if (parts.length >= 2) {
           queryParams.push({
-            name: parts[0],
-            type: parts[1],
-            description: parts[2] ?? '',
+            name: parts[1].replace(/^\$/, ''),
+            type: parts[0],
+            description: parts.slice(2).join(' '),
+            required: paramMatch[1] === 'reqapiparam',
           });
         }
       } else if (
@@ -89,7 +92,7 @@ function parseApiFile(filePath, app, controller) {
       description: description || `${method} ${apiPath}`,
       memberOnly,
       clientOnly,
-      toolName: toToolName(method, apiPath),
+      toolName: buildToolName(method, apiPath),
     });
   }
 
@@ -102,15 +105,6 @@ function pathSuffixFromPath(apiPath) {
     return '_index';
   }
   return `_${segments.slice(2).join('_').replace(/\{|\}/g, '')}`;
-}
-
-function toToolName(method, apiPath) {
-  const segments = apiPath
-    .split('/')
-    .filter(Boolean)
-    .map((s) => s.replace(/\{|\}/g, ''))
-    .join('_');
-  return `ips_${method.toLowerCase()}_${segments}`.replace(/__+/g, '_');
 }
 
 function main() {

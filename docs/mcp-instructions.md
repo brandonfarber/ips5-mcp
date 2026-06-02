@@ -14,7 +14,7 @@ You are connected to an Invision Community 5 site via its REST API.
 |------|------|------|
 | 1 | `ips_read_agent_guide` | Unfamiliar domain terms, forum names, package names, or “how do I…?” |
 | 2 | `ips_list_endpoints` | Find the right `ips_*` tool (`app`, `search`, `method`) |
-| 3 | `ips_get_*` / `ips_post_*` | Call a specific catalogued endpoint |
+| 3 | `g_*` / `p_*` / `u_*` / `d_*` | Call a catalogued endpoint (`g`=GET, `p`=POST, `u`=PUT, `d`=DELETE) |
 | 4 | `ips_api_call` | Fallback: known `method` + `/api` path not in catalog |
 
 There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_agent_guide`** over guessing tool names.
@@ -24,6 +24,7 @@ There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_age
 - **List + paginate**: `query.page`, `query.perPage`, `query.sortBy`, `query.sortDir` (see endpoint doc in list output).
 - **Path IDs**: pass as tool args, e.g. `id` for `/forums/topics/{id}`.
 - **POST/PUT body**: form-urlencoded fields in `body` (not JSON), unless docs say otherwise.
+- **CMS page creation**: when creating raw HTML pages, default `body.ipb_wrapper` to `true` (“Use Suite HTML wrapper”) unless the user explicitly asks for no wrapper.
 - **Commerce (Nexus)**: `transactions` = payments; `invoices` = orders/line items; `purchases` = subscriptions/licenses.
 
 ## Community-specific terms
@@ -37,4 +38,4 @@ The site owner maintains:
 
 ## Sanity check
 
-- `core_hello` or `ips_get_core_hello` — confirms API connectivity.
+- `core_hello` or `g_core_hello` — confirms API connectivity.

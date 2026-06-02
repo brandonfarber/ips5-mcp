@@ -1,6 +1,6 @@
 # ips5-mcp
 
-[MCP](https://modelcontextprotocol.io/) server for **Invision Community 5** [REST API](https://invisioncommunity.com/__old/buy/developers/rest-api/index/). Exposes **229 endpoint-specific tools** (from the `invision5` codebase) plus discovery and generic call helpers.
+[MCP](https://modelcontextprotocol.io/) server for **Invision Community 5** [REST API](https://invisioncommunity.com/__old/buy/developers/rest-api/index/). Exposes **234 endpoint-specific tools** (from the `invision5` codebase) plus discovery and generic call helpers.
 
 ## Prerequisites
 
@@ -66,12 +66,14 @@ Restart MCP after editing docs.
 | ---- | ------- |
 | `ips_read_agent_guide` | Site glossary + recipes (`docs/agent-guide.md`) |
 | `core_hello` | Backward-compatible alias for GET `/core/hello` |
-| `ips_get_core_hello` | Same as above (catalog name) |
+| `g_core_hello` | Same as above (catalog name) |
 | `ips_list_endpoints` | Search/filter the endpoint catalog |
 | `ips_api_call` | Arbitrary REST call (`method`, `path`, `query`, `body`) |
-| `ips_{method}_{app}_...` | One tool per documented endpoint (229 total) |
+| `g_` / `p_` / `u_` / `d_` + path | One tool per documented endpoint (234 total) |
 
-Example tool names: `ips_get_forums_topics`, `ips_post_core_members`, `ips_delete_blog_comments_id`.
+Tool names are kept short for **Cursor’s 60-character combined server+tool limit**: use a short MCP server key in `.cursor/mcp.json` (e.g. `"ip"`), single-letter HTTP prefixes (`g_` GET, `p_` POST, `u_` PUT, `d_` DELETE), segment abbreviations, and duplicate collapse. Logic: `src/ips/tool-name.ts`; run `npm run refresh-tool-names` after edits.
+
+Example tool names: `g_forums_topics`, `p_core_members`, `d_blog_cmt_id`, `p_cwc_pages`.
 
 Path parameters are tool arguments (e.g. `id` for `/forums/topics/{id}`). Optional `query` and `body` objects map to query string and form body (IPS uses `application/x-www-form-urlencoded` for POST/PUT).
 

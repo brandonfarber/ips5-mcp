@@ -41,7 +41,9 @@ function endpointDescription(endpoint: IpsEndpoint): string {
   const flagText = flags.length ? ` [${flags.join('; ')}]` : '';
   const params =
     endpoint.queryParams.length > 0
-      ? ` Query params: ${endpoint.queryParams.map((p) => p.name).join(', ')}.`
+      ? ` API params: ${endpoint.queryParams
+          .map((p) => (p.required ? `${p.name} (required)` : p.name))
+          .join(', ')}.`
       : '';
   return `${endpoint.method} ${endpoint.path} — ${endpoint.description}.${params}${flagText} Requires IPS5_BASE_URL and IPS5_API_KEY with permission for this endpoint.`;
 }

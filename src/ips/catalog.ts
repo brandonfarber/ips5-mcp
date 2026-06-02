@@ -4,6 +4,7 @@ export type IpsQueryParam = {
   name: string;
   type: string;
   description: string;
+  required?: boolean;
 };
 
 export type IpsEndpoint = {

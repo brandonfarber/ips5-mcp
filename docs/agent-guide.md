@@ -41,7 +41,7 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
 
 **User:** “What are the latest topics?” / “most recent posts on the forums”
 
-- **Tool:** `ips_get_forums_topics`
+- **Tool:** `g_forums_topics`
 - **Example query:**
   ```json
   {
@@ -59,24 +59,49 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
 
 **User:** “Latest topics in {forum name}”
 
-1. Resolve forum ID from **Forum map** above (or `ips_get_forums_forums`).
-2. **Tool:** `ips_get_forums_topics`
+1. Resolve forum ID from **Forum map** above (or `g_forums`).
+2. **Tool:** `g_forums_topics`
 3. **Example query:** `{ "query": { "forums": "<id>", "perPage": 20, "sortBy": "date", "sortDir": "desc" } }`
 
 ### Members — search
 
 **User:** “Find member by email/name”
 
-- **Tool:** `ips_get_core_members`
+- **Tool:** `g_core_members`
 - **Example query:** `{ "query": { "email": "partial@", "perPage": 25 } }` or `{ "name": "partial" }`
 
 ### Commerce — payments in a year
 
 **User:** “How many $X packages sold in {year}?”
 
-1. Paginate `ips_get_nexus_transactions` with `statuses=okay`, `sortBy=date`, filter by year and `amount.amount === "X.00"`.
-2. Confirm line item on sample invoices via `ips_get_nexus_invoices_id`.
+1. Paginate `g_nexus_transactions` with `statuses=okay`, `sortBy=date`, filter by year and `amount.amount === "X.00"`.
+2. Confirm line item on sample invoices via `g_nexus_invoices_id`.
 3. See maintainer notes in repo `scripts/` if batch scripts exist.
+
+### CMS — raw HTML pages
+
+**User:** “Create a CMS page” / “Generate a new page”
+
+- **List pages:** `g_cwc_pages` with `query.page` and `query.perPage`
+- **View one page:** `g_cwc_pages_id` with `id`
+- **Create page:** `p_cwc_pages` with form fields in `body`
+- **Update page:** `p_cwc_pages_id` with `id` and changed fields in `body`
+- **Delete page:** `d_cwc_pages_id` with `id`
+- **Wrapper default:** Unless the user says otherwise, set `body.ipb_wrapper` to `true` so “Use Suite HTML wrapper” is enabled.
+- **Create body example:**
+  ```json
+  {
+    "body": {
+      "name": "Landing Page",
+      "seo_name": "landing-page",
+      "content": "<h1>Landing Page</h1>",
+      "ipb_wrapper": true,
+      "title": "Landing Page",
+      "meta_description": "Short page summary",
+      "meta_index": true
+    }
+  }
+  ```
 
 <!-- TODO: add your common business questions -->
 

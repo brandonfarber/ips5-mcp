@@ -105,7 +105,7 @@ function registerMetaTools(server: McpServer): void {
     'core_hello',
     {
       description:
-        'Calls Invision Community GET /api/core/hello (community name, URL, IPS version). Alias for ips_get_core_hello.',
+        'Calls Invision Community GET /api/core/hello (community name, URL, IPS version). Alias for catalog tool g_core_hello.',
     },
     async () => {
       const creds = getIpsCredentials();

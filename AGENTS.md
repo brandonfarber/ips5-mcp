@@ -33,7 +33,7 @@ After editing docs, **restart the MCP server** (rebuild if you changed TypeScrip
 1. User asks in natural language (“recent wins on the forums”).
 2. Call **`ips_read_agent_guide`** — map terms using the glossary.
 3. Call **`ips_list_endpoints`** with `app` / `search` if needed.
-4. Call the specific **`ips_get_*`** / **`ips_post_*`** tool with `query` / path params.
+4. Call the specific **`g_*`** / **`p_*`** / **`u_*`** / **`d_*`** tool with `query` / path params.
 5. Paginate with `page` and `perPage` when lists are truncated.
 
 ## Development in this repo
