@@ -88,6 +88,7 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
 - **Update page:** `p_cwc_pages_id` with `id` and changed fields in `body`
 - **Delete page:** `d_cwc_pages_id` with `id`
 - **Wrapper default:** Unless the user says otherwise, set `body.ipb_wrapper` to `true` so “Use Suite HTML wrapper” is enabled.
+- **After create:** Return the response `url` as the page link when it points to the created page. Do not derive the final link from `full_path`; if `url` is missing or is only the site root, say the API did not return a usable page URL.
 - **Create body example:**
   ```json
   {

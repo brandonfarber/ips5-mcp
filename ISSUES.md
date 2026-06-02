@@ -6,7 +6,7 @@
 | 2026-05-12 | info | `@apimemberonly` endpoints need OAuth, not API key; tools are registered but will return IPS permission errors without OAuth. | Open |
 | 2026-05-12 | info | Large tool surface (229+ tools); use `ips_list_endpoints` / `ips_api_call` if the host struggles with tool list size. | Open |
 | 2026-05-12 | info | Site glossary in `docs/agent-guide.md` has TODO placeholders — fill before sharing MCP with others. | Open |
-| 2026-06-02 | info | `POST /copywritingcourse/pages` initially returned an empty `full_path`/root URL for new page ID 769; a follow-up update populated `full_path=brandon-test`. Investigate whether create should call `setFullPath()` or reload after save. | Open |
+| 2026-06-02 | info | `POST /copywritingcourse/pages` returned an empty `full_path` and root `url` for new page IDs 769 and 770; immediate GET for 770 also returned root `url`. A follow-up update populated `full_path`/`url` for 769. Investigate whether create should call `setFullPath()`. | Open |
 
 ## Resolved
 

@@ -25,6 +25,7 @@ There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_age
 - **Path IDs**: pass as tool args, e.g. `id` for `/forums/topics/{id}`.
 - **POST/PUT body**: form-urlencoded fields in `body` (not JSON), unless docs say otherwise.
 - **CMS page creation**: when creating raw HTML pages, default `body.ipb_wrapper` to `true` (“Use Suite HTML wrapper”) unless the user explicitly asks for no wrapper.
+- **CMS page links**: after creating a page, return the response `url` when it points to the created page. Do not derive links from `full_path`; if `url` is missing or only the site root, report that the API did not return a usable page URL.
 - **Commerce (Nexus)**: `transactions` = payments; `invoices` = orders/line items; `purchases` = subscriptions/licenses.
 
 ## Community-specific terms
