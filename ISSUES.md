@@ -6,10 +6,10 @@
 | 2026-05-12 | info | `@apimemberonly` endpoints need OAuth, not API key; tools are registered but will return IPS permission errors without OAuth. | Open |
 | 2026-05-12 | info | Large tool surface (229+ tools); use `ips_list_endpoints` / `ips_api_call` if the host struggles with tool list size. | Open |
 | 2026-05-12 | info | Site glossary in `docs/agent-guide.md` has TODO placeholders — fill before sharing MCP with others. | Open |
-| 2026-06-02 | info | `POST /copywritingcourse/pages` originally returned empty `full_path` and root `url`; after site patch, create returns `full_path` but still returns root `url`, while follow-up GET returns the correct page URL. Consider returning a reloaded page from create. | Open |
 
 ## Resolved
 
+- 2026-06-02: `POST /copywritingcourse/pages` initially returned empty/root URL data; latest site patch confirmed create now returns `full_path` and page-specific `url` directly (`https://kopywriting.com/brandontesttest/` in test), and follow-up GET matches.
 - 2026-06-02: Shortened MCP endpoint tool names for Cursor’s 60-char **server+tool** limit (`g_`/`p_`/`u_`/`d_` prefixes, segment abbreviations, `.cursor/mcp.json` server key `ip`). Re-run `npm run build` and reload MCP after pull.
 - 2026-06-02: First pass shortened names (`ips_del_*`, `cwc`, etc.); superseded by `g_`/`p_`/`d_` scheme above.
 - 2026-06-02: Boolean form fields were encoded as `true`/`false`, which did not enable `ipb_wrapper`; fixed form encoding to send booleans as `1`/`0` for IPS compatibility.
