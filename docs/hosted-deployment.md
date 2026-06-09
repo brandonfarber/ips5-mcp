@@ -11,7 +11,117 @@ Other communities should fork the repo and deploy separately with their own env 
 - IPS5 REST API key with required endpoint permissions
 - Cursor v0.48+ for Streamable HTTP MCP clients
 
-## Build the Docker image
+## Publish the image to GHCR
+
+Your image URL will be:
+
+```text
+ghcr.io/<GITHUB_OWNER>/<REPO_NAME>:<tag>
+```
+
+Example: if the repo is `https://github.com/myorg/ips5-mcp`, the image is `ghcr.io/myorg/ips5-mcp:latest`.
+
+GitHub lowercases the owner name in the registry path (`MyOrg` → `myorg`).
+
+### Option A — GitHub Actions (recommended)
+
+Automatic push on every push to `main` via [`.github/workflows/deploy-magic-container.yml`](../../.github/workflows/deploy-magic-container.yml).
+
+1. **Push this repo to GitHub** (if it is not already there).
+2. **Enable Actions** — repo **Settings → Actions → General** → allow actions.
+3. **Enable GHCR for the repo** — first workflow run creates the package under your account/org **Packages**.
+4. **Push to `main`** — Actions tab should show **Build and Push Docker Image** succeeding.
+5. **Open the package** — GitHub profile or org → **Packages** → `ips5-mcp` (or your repo name).
+6. **Set package visibility:**
+   - **Public** — Bunny can pull without registry credentials (easiest).
+   - **Private** — add GHCR credentials in Bunny when adding the container (see below).
+
+Optional auto-deploy to Bunny after each push:
+
+| Setting | Where | Value |
+|---------|--------|--------|
+| `BUNNY_APP_ID` | Repo **Settings → Secrets and variables → Actions → Variables** | Magic Containers app ID |
+| `BUNNYNET_API_KEY` | **Secrets** | Bunny API key |
+| Container name | Workflow file | Must match Bunny container name (`ips5-mcp`) |
+
+If `BUNNY_APP_ID` is empty, CI still pushes to GHCR but skips the Bunny update step.
+
+### Option B — Manual push from your machine
+
+Use this for a first publish before CI exists, or to push from a branch.
+
+**1. Install Docker Desktop** (or Docker Engine) and ensure `docker` runs.
+
+**2. Create a GitHub Personal Access Token**
+
+- GitHub → **Settings → Developer settings → Personal access tokens**
+- **Fine-grained** or **Classic** token with:
+  - `write:packages` (push images)
+  - `read:packages` (pull, if you test locally)
+  - `repo` (if the repository is private)
+
+**3. Log in to GHCR**
+
+PowerShell:
+
+```powershell
+$env:CR_PAT = "your_token_here"
+$env:CR_PAT | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+
+Replace `YOUR_GITHUB_USERNAME` with your GitHub username (not email).
+
+**4. Build for Bunny (`linux/amd64`)**
+
+From the repo root:
+
+```powershell
+docker build --platform linux/amd64 -t ghcr.io/YOUR_GITHUB_USERNAME/ips5-mcp:latest .
+```
+
+Use your **org name** instead of username if the repo lives under an organization.
+
+**5. Push**
+
+```powershell
+docker push ghcr.io/YOUR_GITHUB_USERNAME/ips5-mcp:latest
+```
+
+Optional: tag a specific version:
+
+```powershell
+docker tag ghcr.io/YOUR_GITHUB_USERNAME/ips5-mcp:latest ghcr.io/YOUR_GITHUB_USERNAME/ips5-mcp:v0.0.1
+docker push ghcr.io/YOUR_GITHUB_USERNAME/ips5-mcp:v0.0.1
+```
+
+**6. Link package to the repository (first time only)**
+
+Package page → **Package settings** → **Connect repository** → select `ips5-mcp`.
+
+**7. Make the package public (if Bunny should pull without credentials)**
+
+Package → **Package settings** → **Change visibility** → **Public**.
+
+### Bunny: use the GHCR image
+
+In **Magic Containers → Add container**:
+
+| Field | Value |
+|-------|--------|
+| Registry | GitHub Container Registry |
+| Image | `YOUR_GITHUB_USERNAME/ips5-mcp` (no `ghcr.io` prefix) |
+| Tag | `latest` (manual push) or commit SHA from Actions |
+
+**Private package:** when adding the container, supply registry credentials:
+
+- Username: your GitHub username
+- Password: PAT with `read:packages`
+
+Then continue with endpoint port **80** and secrets from the table below.
+
+---
+
+## Build the Docker image (local only)
 
 Magic Containers requires **`linux/amd64`** images:
 
