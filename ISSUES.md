@@ -6,6 +6,7 @@
 | 2026-05-12 | info | `@apimemberonly` endpoints need OAuth, not API key; tools are registered but will return IPS permission errors without OAuth. | Open |
 | 2026-05-12 | info | Large tool surface (229+ tools); use `ips_list_endpoints` / `ips_api_call` if the host struggles with tool list size. | Open |
 | 2026-05-12 | info | Site glossary in `docs/agent-guide.md` has TODO placeholders — fill before sharing MCP with others. | Open |
+| 2026-06-02 | info | Hosted HTTP mode (`MCP_TRANSPORT=http`) ships for Bunny Magic Containers; see `docs/hosted-deployment.md`. | Open |
 
 ## Resolved
 

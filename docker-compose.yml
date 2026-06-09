@@ -1,0 +1,13 @@
+services:
+  ips5-mcp:
+    build:
+      context: .
+      platforms:
+        - linux/amd64
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    environment:
+      MCP_TRANSPORT: http
+      PORT: 80

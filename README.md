@@ -36,7 +36,7 @@ This updates `src/ips/endpoints.json` from `applications/*/api/*.php` docblocks.
 | Script | Description |
 | ------ | ----------- |
 | `npm run build` | Compile TypeScript → `dist/` |
-| `npm start` | Run MCP server (stdio) |
+| `npm start` | Run MCP server (`stdio` default, or `http` when `MCP_TRANSPORT=http`) |
 | `npm run dev` | Watch `src/` with tsx |
 | `npm test` | Jest tests |
 | `npm run extract-endpoints` | Regenerate `endpoints.json` from invision5 |
@@ -81,6 +81,45 @@ Path parameters are tool arguments (e.g. `id` for `/forums/topics/{id}`). Option
 
 Project config: **`.cursor/mcp.json`** (stdio + `envFile` → `.env`). Enable **ips5-mcp** under Settings → Tools & MCP, then reload after `npm run build`.
 
+## Hosted deployment (Bunny Magic Containers)
+
+Run one container for **your** IPS site. Team members connect via Streamable HTTP; other communities self-host their own containers.
+
+| Mode | `MCP_TRANSPORT` | Use case |
+|------|-----------------|----------|
+| stdio (default) | unset or `stdio` | Local Cursor, `npm start` |
+| HTTP | `http` | Bunny Magic Containers, remote Cursor |
+
+HTTP env vars (see [`.env.example`](.env.example)):
+
+- `PORT` — listen port (`8080` local, `80` on Bunny)
+- `MCP_AUTH_TOKEN` — Bearer token for `/mcp` (required in http mode)
+- `MCP_ALLOWED_HOSTS` — comma-separated hostnames (e.g. `mc-xxx.bunny.run`)
+
+Build for Bunny (**linux/amd64** required):
+
+```bash
+docker build --platform linux/amd64 -t ghcr.io/YOUR_ORG/ips5-mcp:latest .
+docker compose up --build   # local smoke test on :8080
+```
+
+Full checklist: **[`docs/hosted-deployment.md`](docs/hosted-deployment.md)** (Bunny secrets, Cursor `url` config, CI/CD).
+
+Remote Cursor example (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "ip-remote": {
+      "url": "https://mc-xxx.bunny.run/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:IPS5_MCP_TOKEN}"
+      }
+    }
+  }
+}
+```
+
 ## Layout
 
 ```
@@ -89,7 +128,7 @@ docs/
   mcp-instructions.md # MCP server instructions
   recipes.md          # optional extra recipes
 src/
-  index.ts, server.ts, config.ts, env.ts
+  index.ts, server.ts, http.ts, config.ts, env.ts
   docs/               # loads docs/*.md at runtime
   ips/
     client.ts       # HTTP client (Basic auth, form bodies)

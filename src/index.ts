@@ -1,8 +1,16 @@
 #!/usr/bin/env node
 
-import { runMcpServer } from './server.js';
+import { config as loadDotenv } from 'dotenv';
 
-void runMcpServer().catch((err: unknown) => {
+import { getMcpTransport } from './config.js';
+import { runHttpServer } from './http.js';
+import { runStdioServer } from './server.js';
+
+loadDotenv();
+
+const transport = getMcpTransport();
+
+void (transport === 'http' ? runHttpServer() : runStdioServer()).catch((err: unknown) => {
   console.error(err);
   process.exit(1);
 });
