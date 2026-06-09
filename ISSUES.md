@@ -9,6 +9,8 @@
 | 2026-06-02 | info | Hosted HTTP mode (`MCP_TRANSPORT=http`) ships for Bunny Magic Containers; see `docs/hosted-deployment.md`. | Open |
 
 | 2026-06-09 | info | Bunny CDN endpoints: use `https://mc-<id>.b-cdn.net` for HTTPS (not `bunny.run`, which can fail TLS). | Open |
+| 2026-06-09 | info | `GET /core/search` `start_after` / `updated_after`: catalog says “Date period (from current time)” but live site expects a **Unix timestamp** (e.g. `1780521600` for 2026-06-04). ISO datetimes (`2026-06-04T00:00:00Z`) and `P5D` do not filter; ISO returns unfiltered results, `P5D` behaves unpredictably. Documented in `docs/mcp-instructions.md`, `docs/agent-guide.md`, and `g_core_search` tool description. | Open |
+| 2026-06-09 | info | `GET /forums/posts` `sortBy=date&sortDir=desc` is not strictly chronological; recent posts can appear on page 1 mixed with older posts. No server-side date filter — counting posts in a date range requires scanning and filtering client-side. | Open |
 
 ## Resolved
 

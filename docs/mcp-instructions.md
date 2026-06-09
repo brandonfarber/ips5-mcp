@@ -27,6 +27,8 @@ There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_age
 - **CMS page creation**: when creating raw HTML pages, default `body.ipb_wrapper` to `true` (“Use Suite HTML wrapper”) unless the user explicitly asks for no wrapper.
 - **CMS page links**: after creating a page, return the response `url` when it points to the created page. Do not derive links from `full_path`; if `url` is missing or only the site root, report that the API did not return a usable page URL.
 - **Commerce (Nexus)**: `transactions` = payments; `invoices` = orders/line items; `purchases` = subscriptions/licenses.
+- **Search date filters** (`g_core_search`): `start_after`, `start_before`, `updated_after`, and `updated_before` must be **Unix timestamps in seconds** (string or number), e.g. `"1780521600"` for 2026-06-04 00:00:00 UTC. Do **not** use ISO datetimes (`2026-06-04T00:00:00Z`) or ISO-8601 durations (`P5D`) — those do not filter correctly on the live API.
+- **Forum posts in a date range**: `g_forums_posts` has no date filter; paginate and filter on `results[].date`, or use `g_core_search` with a Unix `start_after` plus `type` (see agent guide). Search indexes primary content items, not every forum reply.
 
 ## Community-specific terms
 

@@ -63,6 +63,36 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
 2. **Tool:** `g_forums_topics`
 3. **Example query:** `{ "query": { "forums": "<id>", "perPage": 20, "sortBy": "date", "sortDir": "desc" } }`
 
+### Search — content since a date
+
+**User:** “What was posted in the last N days?” / “Content since {date}”
+
+- **Tool:** `g_core_search`
+- **Date params:** `start_after`, `start_before`, `updated_after`, `updated_before` require a **Unix timestamp in seconds** (not ISO datetime, not `P5D`).
+- **Compute cutoff:** e.g. five days ago → `Math.floor((Date.now() - 5 * 864e5) / 1000)` → pass as string in `query`.
+- **Example query** (all indexed content since 2026-06-04 00:00:00 UTC):
+  ```json
+  {
+    "query": {
+      "start_after": "1780521600",
+      "sortby": "newest",
+      "perPage": 100,
+      "page": 1,
+      "doNotTrack": 1
+    }
+  }
+  ```
+- **Restrict by app:** add `"type": "forums_topic"` (or another value from `g_core_search_ctypes`). Search returns indexed items; it may omit some forum replies.
+- **Response:** use `totalResults` for count; paginate with `page` if needed.
+
+### Forums — posts in a date range
+
+**User:** “How many forum posts in the last N days?”
+
+- **Tool:** `g_forums_posts` (forum replies, not topics)
+- **No server-side date filter** — paginate with `sortBy: "date"`, `sortDir: "desc"`, filter each `results[].date` against your cutoff. Note: sort is not strictly chronological; scan pages until confident you have the full set.
+- **Alternative:** `g_core_search` with Unix `start_after` only finds indexed primary content, not every reply.
+
 ### Members — search
 
 **User:** “Find member by email/name”
