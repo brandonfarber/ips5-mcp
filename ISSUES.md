@@ -8,6 +8,8 @@
 | 2026-05-12 | info | Site glossary in `docs/agent-guide.md` has TODO placeholders — fill before sharing MCP with others. | Open |
 | 2026-06-02 | info | Hosted HTTP mode (`MCP_TRANSPORT=http`) ships for Bunny Magic Containers; see `docs/hosted-deployment.md`. | Open |
 
+| 2026-06-09 | info | Bunny CDN endpoints: use `https://mc-<id>.b-cdn.net` for HTTPS (not `bunny.run`, which can fail TLS). | Open |
+
 ## Resolved
 
 - 2026-06-02: `POST /copywritingcourse/pages` initially returned empty/root URL data; latest site patch confirmed create now returns `full_path` and page-specific `url` directly (`https://kopywriting.com/brandontesttest/` in test), and follow-up GET matches.

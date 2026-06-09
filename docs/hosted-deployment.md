@@ -142,7 +142,7 @@ curl http://localhost:8080/health
 
 1. **Magic Containers** → Add app → select your registry image.
 2. **Add container** — image tag `latest` or commit SHA from CI.
-3. **Add endpoint** — container port **80** (matches `PORT` in the image).
+3. **Add endpoint** — container port **80** (matches `PORT` in the image). For CDN endpoints, disable **SSL for origin** (the container speaks HTTP on port 80; Bunny terminates TLS at the edge).
 4. **Secrets** (never commit these):
 
    | Variable | Example |
@@ -151,9 +151,27 @@ curl http://localhost:8080/health
    | `IPS5_API_KEY` | ACP REST key |
    | `MCP_AUTH_TOKEN` | Long random string (team MCP access) |
    | `MCP_TRANSPORT` | `http` |
-   | `MCP_ALLOWED_HOSTS` | `mc-xxx.bunny.run` (your Bunny hostname) |
+   | `MCP_ALLOWED_HOSTS` | `mc-xxx.b-cdn.net` (see below) |
 
 5. Optional: custom hostname + Bunny SSL on the endpoint.
+
+### Public URL: `b-cdn.net` vs `bunny.run`
+
+CDN endpoints create a **pull zone**. The HTTPS URL clients should use is usually:
+
+```text
+https://mc-<id>.b-cdn.net
+```
+
+not `https://mc-<id>.bunny.run`. The `bunny.run` hostname may not terminate TLS correctly (`ERR_SSL_PROTOCOL_ERROR` in browsers); the pull zone hostname on `b-cdn.net` is the reliable public URL.
+
+After deploy, confirm in the Bunny dashboard (Endpoints or linked pull zone) and test:
+
+```bash
+curl https://mc-<id>.b-cdn.net/health
+```
+
+Set `MCP_ALLOWED_HOSTS` to that **exact** hostname (e.g. `mc-tf903nfnan.b-cdn.net`). Add a custom domain later as a comma-separated second entry if needed.
 
 **Outbound:** The container must reach `IPS5_BASE_URL` over HTTPS. Allow Bunny egress IPs if your IPS install restricts REST API access.
 
@@ -165,7 +183,7 @@ Keep local stdio in project `.cursor/mcp.json` for development. For the hosted s
 {
   "mcpServers": {
     "ip-remote": {
-      "url": "https://mc-xxx.bunny.run/mcp",
+      "url": "https://mc-xxx.b-cdn.net/mcp",
       "headers": {
         "Authorization": "Bearer ${env:IPS5_MCP_TOKEN}"
       }

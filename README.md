@@ -94,7 +94,7 @@ HTTP env vars (see [`.env.example`](.env.example)):
 
 - `PORT` — listen port (`8080` local, `80` on Bunny)
 - `MCP_AUTH_TOKEN` — Bearer token for `/mcp` (required in http mode)
-- `MCP_ALLOWED_HOSTS` — comma-separated hostnames (e.g. `mc-xxx.bunny.run`)
+- `MCP_ALLOWED_HOSTS` — comma-separated hostnames (e.g. `mc-xxx.b-cdn.net`; use the pull zone URL, not `bunny.run`)
 
 Build for Bunny (**linux/amd64** required):
 
@@ -111,7 +111,7 @@ Remote Cursor example (`~/.cursor/mcp.json`):
 {
   "mcpServers": {
     "ip-remote": {
-      "url": "https://mc-xxx.bunny.run/mcp",
+      "url": "https://mc-xxx.b-cdn.net/mcp",
       "headers": {
         "Authorization": "Bearer ${env:IPS5_MCP_TOKEN}"
       }
