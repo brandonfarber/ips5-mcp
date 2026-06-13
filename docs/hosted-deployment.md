@@ -152,6 +152,15 @@ curl http://localhost:8080/health
    | `MCP_AUTH_TOKEN` | Long random string (team MCP access) |
    | `MCP_TRANSPORT` | `http` |
    | `MCP_ALLOWED_HOSTS` | `mc-xxx.b-cdn.net` (see below) |
+   | `MCP_AUTH_MODE` | `both` (Cursor token + ChatGPT OAuth) |
+   | `MCP_OAUTH_ISSUER_URL` | `https://mcp.yourdomain.com` |
+   | `MCP_RESOURCE_URL` | `https://mcp.yourdomain.com/mcp` |
+   | `IPS_OAUTH_CLIENT_ID` | IPS gateway OAuth client (see [oauth-chatgpt.md](oauth-chatgpt.md)) |
+   | `IPS_OAUTH_CLIENT_SECRET` | Gateway client secret |
+   | `MCP_ADMIN_GROUP_IDS` | Administrator group ID(s), comma-separated |
+   | `MCP_OAUTH_STORE_PATH` | Optional file path for OAuth persistence |
+
+   Full OAuth setup: **[docs/oauth-chatgpt.md](oauth-chatgpt.md)**.
 
 5. Optional: custom hostname + Bunny SSL on the endpoint.
 
@@ -214,9 +223,12 @@ See `.github/workflows/deploy-magic-container.yml`. Configure optional Bunny aut
 
 ## Security notes
 
-- **MCP_AUTH_TOKEN** — who can call your MCP endpoint.
+- **MCP_AUTH_TOKEN** — who can call your MCP endpoint (Cursor static bearer).
+- **OAuth** — ChatGPT and similar clients; gated by IPS login + `MCP_ADMIN_GROUP_IDS`. See [oauth-chatgpt.md](oauth-chatgpt.md).
 - **IPS5_API_KEY** — what the server can do on the forum (scope in ACP).
 - Rotate tokens independently.
 - TLS terminates at Bunny; the container listens on HTTP internally.
+
+**Multi-pod:** OAuth state is in-memory by default. Use autoscaling max=1 or `MCP_OAUTH_STORE_PATH` on a persistent volume before scaling out.
 
 If clients struggle with 200+ tools, use `ips_list_endpoints` and `ips_api_call` instead of loading every tool.
