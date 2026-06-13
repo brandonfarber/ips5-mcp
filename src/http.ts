@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import express from 'express';
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
 import {
   getOAuthProtectedResourceMetadataUrl,
@@ -231,20 +232,24 @@ function setupOAuth(app: Express): RequestHandler | undefined {
  * Express app for hosted Streamable HTTP MCP (`/health`, `/mcp`, OAuth).
  */
 export function createHttpApp(): Express {
-  const allowedHosts = getHttpAllowedHosts();
-  const app = createMcpExpressApp({
-    host: '0.0.0.0',
-    allowedHosts: allowedHosts.length > 0 ? allowedHosts : undefined,
-  });
+  const rootApp = express();
 
-  app.get('/health', (_req, res) => {
+  // Platform health probes often omit Host or use 127.0.0.1 — register before host validation.
+  rootApp.get('/health', (_req, res) => {
     const oauth = getOAuthConfigStatus();
+    res.set('Cache-Control', 'no-store');
     res.json({
       status: 'ok',
       auth: getMcpAuthMode(),
       oauth_configured: oauth.configured,
       oauth_checks: oauth.checks,
     });
+  });
+
+  const allowedHosts = getHttpAllowedHosts();
+  const app = createMcpExpressApp({
+    host: '0.0.0.0',
+    allowedHosts: allowedHosts.length > 0 ? allowedHosts : undefined,
   });
 
   const mode = getMcpAuthMode();
@@ -265,7 +270,8 @@ export function createHttpApp(): Express {
     }
   }
 
-  return app;
+  rootApp.use(app);
+  return rootApp;
 }
 
 /**

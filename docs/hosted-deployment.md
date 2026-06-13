@@ -184,9 +184,9 @@ Set `MCP_ALLOWED_HOSTS` to that **exact** hostname (e.g. `mc-tf903nfnan.b-cdn.ne
 
 The server automatically allows `127.0.0.1` and `localhost` for platform health probes when `MCP_ALLOWED_HOSTS` is set.
 
-**Startup probe failures:** If Bunny logs `Startup probe failed` while the app prints `HTTP listening`, check **Container Settings → Monitoring**. Use HTTP GET on path `/health` port `80`, or TCP on port `80`.
+**Startup probe failures:** Bunny’s HTTP probe often hits `/health` **without a `Host` header** (or with an internal hostname). Host validation on that path returns 403, so probes fail even while the app is listening. The server registers `/health` **before** host validation; use HTTP GET **`/health`** port **80**, or TCP port **80**.
 
-**OAuth `.well-known` 404:** Routes mount only when all OAuth env checks pass. After deploy, `GET /health` returns `oauth_checks` booleans. `IPS_OAUTH_SCOPES` does **not** affect route registration (only IPS login). In Bunny, `IPS_OAUTH_CLIENT_ID` and `IPS_OAUTH_CLIENT_SECRET` must be **environment variables** on the container (Secrets tab still injects env vars — confirm names match exactly).
+If `GET /health` via your public URL still shows `{"status":"ok"}` only, **new pods may not be in rotation yet** (probes failing) and the CDN is pulling from an older pod. After probes pass, expect `oauth_configured` and `oauth_checks` in the JSON. `/health` sends `Cache-Control: no-store`.
 
 **Outbound:** The container must reach `IPS5_BASE_URL` over HTTPS. Allow Bunny egress IPs if your IPS install restricts REST API access.
 

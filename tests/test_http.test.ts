@@ -37,6 +37,15 @@ describe('createHttpApp', () => {
     });
   });
 
+  test('GET /health succeeds without Host header when allowedHosts is set', async () => {
+    process.env.MCP_ALLOWED_HOSTS = 'mcp.example.com';
+    const app = createHttpApp();
+    const res = await supertest(app).get('/health');
+
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ok');
+  });
+
   test('POST /mcp without Authorization returns 401', async () => {
     const app = createHttpApp();
     const res = await supertest(app).post('/mcp').send({});
