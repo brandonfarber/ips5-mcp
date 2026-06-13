@@ -23,7 +23,18 @@ describe('createHttpApp', () => {
     const res = await supertest(app).get('/health');
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: 'ok' });
+    expect(res.body).toEqual({
+      status: 'ok',
+      auth: 'token',
+      oauth_configured: false,
+      oauth_checks: {
+        mcp_oauth_issuer_url: false,
+        ips5_base_url: false,
+        ips_oauth_client_id: false,
+        ips_oauth_client_secret: false,
+        mcp_admin_group_ids: false,
+      },
+    });
   });
 
   test('POST /mcp without Authorization returns 401', async () => {

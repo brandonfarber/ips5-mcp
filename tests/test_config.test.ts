@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import {
+  getHttpAllowedHosts,
   getHttpPort,
   getMcpAllowedHosts,
   getMcpAuthMode,
@@ -8,6 +9,7 @@ import {
   getMcpTransport,
   getServerInfo,
   isOAuthConfigured,
+  getOAuthConfigStatus,
   validateHttpAuthConfig,
 } from '../src/config.js';
 
@@ -89,6 +91,11 @@ describe('hosted MCP config', () => {
     expect(getMcpAllowedHosts()).toEqual([]);
   });
 
+  test('getHttpAllowedHosts adds localhost probe hosts', () => {
+    process.env.MCP_ALLOWED_HOSTS = 'mcp.example.com';
+    expect(getHttpAllowedHosts()).toEqual(['mcp.example.com', '127.0.0.1', 'localhost']);
+  });
+
   test('getMcpAuthMode defaults to both', () => {
     delete process.env.MCP_AUTH_MODE;
     expect(getMcpAuthMode()).toBe('both');
@@ -108,6 +115,7 @@ describe('hosted MCP config', () => {
     process.env.IPS_OAUTH_CLIENT_SECRET = 'secret';
     process.env.MCP_ADMIN_GROUP_IDS = '4';
     expect(isOAuthConfigured()).toBe(true);
+    expect(getOAuthConfigStatus().checks.ips_oauth_client_id).toBe(true);
   });
 
   test('validateHttpAuthConfig accepts both mode with token only', () => {

@@ -48,6 +48,21 @@ export function getMcpAllowedHosts(): string[] {
     .filter((host) => host.length > 0);
 }
 
+/** Allowed Host headers for HTTP mode, including localhost for platform health probes. */
+export function getHttpAllowedHosts(): string[] {
+  const hosts = getMcpAllowedHosts();
+  if (hosts.length === 0) {
+    return [];
+  }
+  const merged = [...hosts];
+  for (const probeHost of ['127.0.0.1', 'localhost']) {
+    if (!merged.includes(probeHost)) {
+      merged.push(probeHost);
+    }
+  }
+  return merged;
+}
+
 /** Static bearer, OAuth bearer, or both (default `both` for hosted). */
 export function getMcpAuthMode(): McpAuthMode {
   const value = (process.env.MCP_AUTH_MODE ?? 'both').trim().toLowerCase();
@@ -119,13 +134,29 @@ export function getMcpOAuthScopes(): string[] {
 }
 
 export function isOAuthConfigured(): boolean {
-  return Boolean(
-    (process.env.MCP_OAUTH_ISSUER_URL ?? '').trim() &&
-      getIps5BaseUrl() &&
-      getIpsOAuthClientId() &&
-      getIpsOAuthClientSecret() &&
-      getMcpAdminGroupIds().length > 0,
-  );
+  return getOAuthConfigStatus().configured;
+}
+
+/** Per-field OAuth env diagnostics (safe for /health — never exposes secret values). */
+export function getOAuthConfigStatus(): {
+  configured: boolean;
+  checks: {
+    mcp_oauth_issuer_url: boolean;
+    ips5_base_url: boolean;
+    ips_oauth_client_id: boolean;
+    ips_oauth_client_secret: boolean;
+    mcp_admin_group_ids: boolean;
+  };
+} {
+  const checks = {
+    mcp_oauth_issuer_url: Boolean((process.env.MCP_OAUTH_ISSUER_URL ?? '').trim()),
+    ips5_base_url: Boolean(getIps5BaseUrl()),
+    ips_oauth_client_id: Boolean(getIpsOAuthClientId()),
+    ips_oauth_client_secret: Boolean(getIpsOAuthClientSecret()),
+    mcp_admin_group_ids: getMcpAdminGroupIds().length > 0,
+  };
+  const configured = Object.values(checks).every(Boolean);
+  return { configured, checks };
 }
 
 export function validateHttpAuthConfig(): void {

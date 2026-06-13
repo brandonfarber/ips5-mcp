@@ -10,13 +10,14 @@ import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import type { Express, Request, Response, NextFunction, RequestHandler } from 'express';
 
 import {
+  getHttpAllowedHosts,
   getHttpPort,
-  getMcpAllowedHosts,
   getMcpAuthMode,
   getMcpAuthToken,
   getMcpOAuthIssuerUrl,
   getMcpOAuthScopes,
   getMcpResourceUrl,
+  getOAuthConfigStatus,
   isOAuthConfigured,
   validateHttpAuthConfig,
 } from './config.js';
@@ -230,14 +231,20 @@ function setupOAuth(app: Express): RequestHandler | undefined {
  * Express app for hosted Streamable HTTP MCP (`/health`, `/mcp`, OAuth).
  */
 export function createHttpApp(): Express {
-  const allowedHosts = getMcpAllowedHosts();
+  const allowedHosts = getHttpAllowedHosts();
   const app = createMcpExpressApp({
     host: '0.0.0.0',
     allowedHosts: allowedHosts.length > 0 ? allowedHosts : undefined,
   });
 
   app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' });
+    const oauth = getOAuthConfigStatus();
+    res.json({
+      status: 'ok',
+      auth: getMcpAuthMode(),
+      oauth_configured: oauth.configured,
+      oauth_checks: oauth.checks,
+    });
   });
 
   const mode = getMcpAuthMode();
@@ -272,7 +279,13 @@ export async function runHttpServer(): Promise<void> {
 
   await new Promise<void>((resolve, reject) => {
     const server = app.listen(port, '0.0.0.0', () => {
+      const oauth = getOAuthConfigStatus();
       console.log(`ips5-mcp HTTP listening on 0.0.0.0:${port} (auth: ${getMcpAuthMode()})`);
+      console.log(
+        `OAuth configured: ${oauth.configured} (${Object.entries(oauth.checks)
+          .map(([key, ok]) => `${key}=${ok}`)
+          .join(', ')})`,
+      );
       resolve();
     });
     server.on('error', reject);
