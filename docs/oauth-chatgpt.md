@@ -119,8 +119,51 @@ Keep static bearer in `~/.cursor/mcp.json` when `MCP_AUTH_MODE` is `token` or `b
 
 | Symptom | Check |
 |---------|--------|
+| `invalid_client` on ChatGPT connect | **Most common:** multiple Bunny pods/regions — DCR on one pod, `/authorize` on another (in-memory store). Set autoscale **max=1** per region or use one region only. Remove and re-add the ChatGPT connector to force fresh DCR. Check Bunny logs for `OAuth client not found: <id>`. |
+| `invalid_client` on **kopywriting.com** (IPS) | `IPS_OAUTH_CLIENT_ID` / secret in Bunny do not match the gateway OAuth client in ACP |
 | `access_denied` after IPS login | Member’s `primaryGroup.id` not in `MCP_ADMIN_GROUP_IDS` |
 | OAuth works once, fails on retry | Multiple pods without shared `MCP_OAUTH_STORE_PATH` |
 | IPS callback error | Gateway redirect URI must match exactly; PKCE S256 enabled |
 | `IPS /core/me failed` | Gateway client REST scopes include `/core/me` |
 | Cursor 401 with `both` mode | `MCP_AUTH_TOKEN` must still be set and match client header |
+
+ChatGPT redirect URIs (registered automatically via DCR when ChatGPT calls `/register`):
+
+- `https://chatgpt.com/connector_platform_oauth_redirect`
+- `https://chatgpt.com/oauth/callback`
+- `https://chat.openai.com/oauth/callback`
+
+## End-to-end test script (no ChatGPT)
+
+From the repo root, against production or any hosted URL:
+
+```bash
+npm run test:oauth
+```
+
+Or:
+
+```bash
+node scripts/test-oauth-flow.mjs --base-url https://mcp.kopywriting.com
+```
+
+The script:
+
+1. Verifies metadata and `oauth_configured` on `/health`
+2. Registers a temporary OAuth client (DCR)
+3. Opens your browser at `http://127.0.0.1:9876/start` (redirects to `/authorize` with full query string — avoids Windows `cmd` truncating URLs at `&`)
+4. Listens on `http://127.0.0.1:9876/callback` for the redirect
+5. Exchanges the code for an MCP `access_token`
+6. Calls `POST /mcp` initialize with that bearer token
+
+Options:
+
+| Flag / env | Purpose |
+|------------|---------|
+| `--base-url URL` | Target server (default `https://mcp.kopywriting.com`) |
+| `MCP_OAUTH_TEST_BASE_URL` | Same as `--base-url` |
+| `--no-browser` | Print authorize URL instead of opening a browser |
+
+Use `--no-browser` if the browser does not open automatically; paste the URL manually.
+
+Expected output ends with `All steps passed. OAuth flow is working end-to-end.`

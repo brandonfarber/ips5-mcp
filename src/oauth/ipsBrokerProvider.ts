@@ -3,6 +3,7 @@ import type { Response } from 'express';
 import type { OAuthServerProvider } from '@modelcontextprotocol/sdk/server/auth/provider.js';
 import type { OAuthClientInformationFull, OAuthTokens } from '@modelcontextprotocol/sdk/shared/auth.js';
 import { InvalidRequestError, InvalidTokenError } from '@modelcontextprotocol/sdk/server/auth/errors.js';
+import { redirectUriMatches } from '@modelcontextprotocol/sdk/server/auth/handlers/authorize.js';
 import type { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 
 import {
@@ -37,7 +38,15 @@ export class IpsOAuthBrokerProvider implements OAuthServerProvider {
     this.ipsCallbackUrl = new URL(callbackPath, issuer).href;
 
     this.clientsStore = {
-      getClient: (clientId) => options.store.getClient(clientId),
+      getClient: async (clientId) => {
+        const client = await options.store.getClient(clientId);
+        if (!client) {
+          console.warn(
+            `OAuth client not found: ${clientId} (if using multiple pods/regions, DCR clients are not shared — set autoscale max=1 or use MCP_OAUTH_STORE_PATH on shared storage)`,
+          );
+        }
+        return client;
+      },
       registerClient: (client) => options.store.registerClient(client),
     };
   }
@@ -47,7 +56,7 @@ export class IpsOAuthBrokerProvider implements OAuthServerProvider {
     params: import('@modelcontextprotocol/sdk/server/auth/provider.js').AuthorizationParams,
     res: Response,
   ): Promise<void> {
-    if (!client.redirect_uris.includes(params.redirectUri)) {
+    if (!client.redirect_uris.some((registered) => redirectUriMatches(params.redirectUri, registered))) {
       throw new InvalidRequestError('Unregistered redirect_uri');
     }
 
