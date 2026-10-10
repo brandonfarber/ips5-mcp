@@ -65,4 +65,38 @@ describe('endpoint catalog', () => {
       ]),
     );
   });
+
+  test('includes copywritingcourse CMS media manager endpoints', () => {
+    const upload = getEndpointByToolName('p_cwc_media');
+    expect(upload).toMatchObject({
+      app: 'copywritingcourse',
+      method: 'POST',
+      path: '/copywritingcourse/media',
+    });
+    expect(upload?.description).toContain('base64-encoded content');
+    expect(upload?.queryParams).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: 'filename', type: 'string', required: true }),
+        expect.objectContaining({ name: 'content', type: 'string', required: true }),
+        expect.objectContaining({ name: 'folder_path', required: false }),
+        expect.objectContaining({ name: 'replace', required: false }),
+      ]),
+    );
+
+    const mediaTools = filterEndpoints({ app: 'copywritingcourse', search: 'media', limit: 20 });
+    expect(mediaTools.map((endpoint) => endpoint.toolName)).toEqual(
+      expect.arrayContaining([
+        'g_cwc_media',
+        'g_cwc_media_id',
+        'p_cwc_media',
+        'p_cwc_media_id',
+        'd_cwc_media_id',
+        'g_cwc_mediafolders',
+        'g_cwc_mediafolders_id',
+        'p_cwc_mediafolders',
+        'p_cwc_mediafolders_id',
+        'd_cwc_mediafolders_id',
+      ]),
+    );
+  });
 });

@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-06-02T21:45:41.643Z",
-  "source": "c:\\wamp\\www\\invision5",
-  "count": 234,
+  "generatedAt": "2026-10-10T14:51:12.452Z",
+  "source": "C:\\wamp\\www\\invision5",
+  "count": 244,
   "endpoints": [
     {
       "id": "blog/blogs/DELETE_id",
@@ -566,6 +566,36 @@
       "memberOnly": false,
       "clientOnly": true,
       "toolName": "d_core_webhooks_id"
+    },
+    {
+      "id": "copywritingcourse/media/DELETE_id",
+      "app": "copywritingcourse",
+      "controller": "media",
+      "method": "DELETE",
+      "path": "/copywritingcourse/media/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "Delete a CMS media manager file",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "d_cwc_media_id"
+    },
+    {
+      "id": "copywritingcourse/mediafolders/DELETE_id",
+      "app": "copywritingcourse",
+      "controller": "mediafolders",
+      "method": "DELETE",
+      "path": "/copywritingcourse/mediafolders/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "Delete an empty CMS media manager folder",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "d_cwc_mediafolders_id"
     },
     {
       "id": "copywritingcourse/pages/DELETE_id",
@@ -2814,6 +2844,118 @@
       "memberOnly": false,
       "clientOnly": true,
       "toolName": "g_core_warnrs_id"
+    },
+    {
+      "id": "copywritingcourse/media/GET_index",
+      "app": "copywritingcourse",
+      "controller": "media",
+      "method": "GET",
+      "path": "/copywritingcourse/media",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "page",
+          "type": "int",
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "int",
+          "description": "Number of results per page - defaults to 100",
+          "required": false
+        },
+        {
+          "name": "folder_id",
+          "type": "int",
+          "description": "Only files in this folder. 0 is the root folder",
+          "required": false
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "Partial filename match",
+          "required": false
+        },
+        {
+          "name": "path",
+          "type": "string",
+          "description": "Exact media path, such as images/hero.png",
+          "required": false
+        }
+      ],
+      "description": "List CMS media manager files",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_media"
+    },
+    {
+      "id": "copywritingcourse/media/GET_id",
+      "app": "copywritingcourse",
+      "controller": "media",
+      "method": "GET",
+      "path": "/copywritingcourse/media/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "View a CMS media manager file",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_media_id"
+    },
+    {
+      "id": "copywritingcourse/mediafolders/GET_index",
+      "app": "copywritingcourse",
+      "controller": "mediafolders",
+      "method": "GET",
+      "path": "/copywritingcourse/mediafolders",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "page",
+          "type": "int",
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "int",
+          "description": "Number of results per page - defaults to 100",
+          "required": false
+        },
+        {
+          "name": "parent_id",
+          "type": "int",
+          "description": "Only folders in this parent. 0 is the root folder",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Partial match against the stored folder name",
+          "required": false
+        }
+      ],
+      "description": "List CMS media manager folders",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_mediafolders"
+    },
+    {
+      "id": "copywritingcourse/mediafolders/GET_id",
+      "app": "copywritingcourse",
+      "controller": "mediafolders",
+      "method": "GET",
+      "path": "/copywritingcourse/mediafolders/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "View a CMS media manager folder",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_mediafolders_id"
     },
     {
       "id": "copywritingcourse/pages/GET_index",
@@ -6952,6 +7094,144 @@
       "memberOnly": false,
       "clientOnly": true,
       "toolName": "p_core_webhooks"
+    },
+    {
+      "id": "copywritingcourse/media/POST_index",
+      "app": "copywritingcourse",
+      "controller": "media",
+      "method": "POST",
+      "path": "/copywritingcourse/media",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "Filename, such as hero.png. A path prefix is created as folders.",
+          "required": true
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "Base64-encoded file contents. A data-URI prefix is accepted.",
+          "required": true
+        },
+        {
+          "name": "folder_id",
+          "type": "int",
+          "description": "Destination folder ID. Defaults to 0 for the root folder",
+          "required": false
+        },
+        {
+          "name": "folder_path",
+          "type": "string",
+          "description": "Folder path to create or reuse under folder_id, such as images/heroes",
+          "required": false
+        },
+        {
+          "name": "replace",
+          "type": "bool",
+          "description": "When 1, overwrite an existing file with the same filename in the destination folder",
+          "required": false
+        }
+      ],
+      "description": "Upload a CMS media file. Send filename and base64-encoded content (data-URI prefixes are accepted). Use folder_id or folder_path to choose or create the destination folder. Set replace to 1 to overwrite a file with the same filename in that folder.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_media"
+    },
+    {
+      "id": "copywritingcourse/media/POST_id",
+      "app": "copywritingcourse",
+      "controller": "media",
+      "method": "POST",
+      "path": "/copywritingcourse/media/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "filename",
+          "type": "string",
+          "description": "New filename. A path prefix is created as folders",
+          "required": false
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "Base64-encoded replacement file contents. A data-URI prefix is accepted",
+          "required": false
+        },
+        {
+          "name": "folder_id",
+          "type": "int",
+          "description": "Destination folder ID. 0 is the root folder",
+          "required": false
+        },
+        {
+          "name": "folder_path",
+          "type": "string",
+          "description": "Folder path to create or reuse under folder_id, such as images/heroes",
+          "required": false
+        }
+      ],
+      "description": "Replace, rename, or move a CMS media file. Send base64-encoded content to replace the file bytes.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_media_id"
+    },
+    {
+      "id": "copywritingcourse/mediafolders/POST_index",
+      "app": "copywritingcourse",
+      "controller": "mediafolders",
+      "method": "POST",
+      "path": "/copywritingcourse/mediafolders",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Folder name",
+          "required": true
+        },
+        {
+          "name": "parent_id",
+          "type": "int",
+          "description": "Parent folder ID. Defaults to 0 for the root folder",
+          "required": false
+        }
+      ],
+      "description": "Create a CMS media manager folder. The name is stored as a friendly URL title, and folder names are unique across the media manager.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_mediafolders"
+    },
+    {
+      "id": "copywritingcourse/mediafolders/POST_id",
+      "app": "copywritingcourse",
+      "controller": "mediafolders",
+      "method": "POST",
+      "path": "/copywritingcourse/mediafolders/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "New folder name",
+          "required": false
+        },
+        {
+          "name": "parent_id",
+          "type": "int",
+          "description": "New parent folder ID. 0 is the root folder",
+          "required": false
+        }
+      ],
+      "description": "Rename or move a CMS media manager folder",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_mediafolders_id"
     },
     {
       "id": "copywritingcourse/pages/POST_index",
