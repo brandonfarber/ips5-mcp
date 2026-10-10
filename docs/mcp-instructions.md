@@ -26,6 +26,7 @@ There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_age
 - **POST/PUT body**: form-urlencoded fields in `body` (not JSON), unless docs say otherwise.
 - **CMS page creation**: when creating raw HTML pages, default `body.ipb_wrapper` to `true` (“Use Suite HTML wrapper”) unless the user explicitly asks for no wrapper.
 - **CMS page links**: after creating a page, return the response `url` when it points to the created page. Do not derive links from `full_path`; if `url` is missing or only the site root, report that the API did not return a usable page URL.
+- **CMS media uploads**: `p_cwc_media` takes `body.filename` and `body.content`. `content` must be base64-encoded file bytes (a `data:*;base64,` prefix is accepted), not raw binary. Use `body.folder_id`, `body.folder_path`, or a directory prefix on `filename` to place the file. Set `body.replace` to `1` to overwrite the same filename. Return the response `url` as the public file link and `tag` when inserting the file into a page. See the agent guide for folder tools.
 - **Commerce (Nexus)**: `transactions` = payments; `invoices` = orders/line items; `purchases` = subscriptions/licenses.
 
 ## Community-specific terms

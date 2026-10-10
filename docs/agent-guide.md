@@ -104,6 +104,31 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
   }
   ```
 
+### CMS — media manager
+
+**User:** “Upload an image to the CMS media manager” / “List media files”
+
+- **List files:** `g_cwc_media` with `query.page`, `query.perPage`, and optional `query.folder_id`, `query.filename`, or `query.path`
+- **View one file:** `g_cwc_media_id` with `id`. Use the response `url` as the public file link and `tag` (for example `{media="123"}`) when the file should be inserted into a CMS page or template.
+- **List folders:** `g_cwc_mediafolders`. Optional `query.parent_id` (`0` is the root) and `query.name`.
+- **Create a folder:** `p_cwc_mediafolders` with `body.name` and optional `body.parent_id`. Names are stored as friendly URL titles and must be unique across the media manager.
+- **Upload a file:** `p_cwc_media`. Put the file bytes in `body.content` as base64 (a `data:*;base64,` prefix is accepted). Do not send raw binary or multipart uploads.
+- **Overwrite:** set `body.replace` to `1` to replace a file that already has the same filename in the destination folder. Otherwise the API returns `FILE_EXISTS`.
+- **Folders on upload:** `body.folder_id` selects an existing folder (`0` is the root). `body.folder_path` (or a directory prefix on `body.filename`, such as `images/hero.png`) creates any missing folders under that parent.
+- **Replace bytes for an existing ID:** `p_cwc_media_id` with `id` and `body.content`. Omit `content` to rename or move only.
+- **Delete:** `d_cwc_media_id` deletes a file. `d_cwc_mediafolders_id` deletes a folder only when it has no files and no subfolders.
+- **Limits:** decoded files must be 32MB or smaller. Allowed types match the media manager (images, video, pdf, svg, and common font files).
+- **Upload body example:**
+  ```json
+  {
+    "body": {
+      "filename": "images/hero.png",
+      "content": "<base64 file bytes>",
+      "replace": 1
+    }
+  }
+  ```
+
 <!-- TODO: add your common business questions -->
 
 ## Endpoints that need OAuth

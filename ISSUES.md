@@ -2,6 +2,7 @@
 
 | Date (UTC) | Severity | Summary | Status |
 | ---------- | -------- | ------- | ------ |
+| 2026-10-10 | info | CMS media manager API (`/copywritingcourse/media` and `/copywritingcourse/mediafolders`) uploads via base64 `content` (32MB decoded max, data-URI prefixes accepted). Folder names are stored as friendly URL titles and are unique across the media manager. Endpoints stay unauthorized until the API key is granted access in ACP; no Invision upgrader was generated. | Open |
 | 2026-05-12 | info | Catalog extracted from PHP docblocks (~229 endpoints); inherited base-controller methods may be missing vs `getAllEndpoints()` in a live IPS install. | Open |
 | 2026-05-12 | info | `@apimemberonly` endpoints need OAuth, not API key; tools are registered but will return IPS permission errors without OAuth. | Open |
 | 2026-05-12 | info | Large tool surface (229+ tools); use `ips_list_endpoints` / `ips_api_call` if the host struggles with tool list size. | Open |
