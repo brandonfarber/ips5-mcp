@@ -28,6 +28,8 @@ There are 200+ endpoint tools. Prefer **`ips_list_endpoints`** + **`ips_read_age
 - **CMS page links**: after creating a page, return the response `url` when it points to the created page. Do not derive links from `full_path`; if `url` is missing or only the site root, report that the API did not return a usable page URL.
 - **CMS media uploads**: `p_cwc_media` takes `body.filename` and `body.content`. `content` must be base64-encoded file bytes (a `data:*;base64,` prefix is accepted), not raw binary. Use `body.folder_id`, `body.folder_path`, or a directory prefix on `filename` to place the file. Set `body.replace` to `1` to overwrite the same filename. Return the response `url` as the public file link and `tag` when inserting the file into a page. See the agent guide for folder tools.
 - **Commerce (Nexus)**: `transactions` = payments; `invoices` = orders/line items; `purchases` = subscriptions/licenses.
+- **Search date filters** (`g_core_search`): `start_after`, `start_before`, `updated_after`, and `updated_before` must be **Unix timestamps in seconds** (string or number), e.g. `"1780521600"` for 2026-06-04 00:00:00 UTC. Do **not** use ISO datetimes (`2026-06-04T00:00:00Z`) or ISO-8601 durations (`P5D`) — those do not filter correctly on the live API.
+- **Forum posts in a date range**: `g_forums_posts` has no date filter; paginate and filter on `results[].date`, or use `g_core_search` with a Unix `start_after` plus `type` (see agent guide). Search indexes primary content items, not every forum reply.
 
 ## Community-specific terms
 

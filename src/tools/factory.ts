@@ -45,7 +45,12 @@ function endpointDescription(endpoint: IpsEndpoint): string {
           .map((p) => (p.required ? `${p.name} (required)` : p.name))
           .join(', ')}.`
       : '';
-  return `${endpoint.method} ${endpoint.path} — ${endpoint.description}.${params}${flagText} Requires IPS5_BASE_URL and IPS5_API_KEY with permission for this endpoint.`;
+  let extra = '';
+  if (endpoint.path === '/core/search') {
+    extra =
+      ' Date filters start_after/start_before/updated_after/updated_before: Unix timestamp in seconds (e.g. "1780521600"), not ISO datetime or P5D.';
+  }
+  return `${endpoint.method} ${endpoint.path} — ${endpoint.description}.${params}${extra}${flagText} Requires IPS5_BASE_URL and IPS5_API_KEY with permission for this endpoint.`;
 }
 
 export function registerEndpointTool(server: McpServer, endpoint: IpsEndpoint): void {

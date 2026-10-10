@@ -15,7 +15,8 @@
     "dev": "tsx watch src/index.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "extract-endpoints": "tsx scripts/extract-endpoints.mjs",
-    "refresh-tool-names": "tsx scripts/refresh-tool-names.mjs"
+    "refresh-tool-names": "tsx scripts/refresh-tool-names.mjs",
+    "test:oauth": "node scripts/test-oauth-flow.mjs"
   },
   "keywords": [
     "mcp",
