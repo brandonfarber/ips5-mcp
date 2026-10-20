@@ -21,7 +21,8 @@ import { exchangeIpsAuthorizationCode } from './ipsToken.js';
 import { generatePkcePair } from './pkce.js';
 import type { OAuthStore } from './store.js';
 
-const MCP_ACCESS_TOKEN_TTL_MS = 60 * 60 * 1000;
+/** MCP bearer lifetime: 30 days. Refresh tokens are not issued. */
+const MCP_ACCESS_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export type IpsOAuthBrokerOptions = {
   store: OAuthStore;
