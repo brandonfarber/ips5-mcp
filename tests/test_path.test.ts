@@ -32,4 +32,16 @@ describe('encodeFormBody', () => {
       'ipb_wrapper=1&meta_index=0',
     );
   });
+
+  test('encodes objects and arrays as JSON so values start with { or [', () => {
+    const body = encodeFormBody({
+      areas: { col1: ['hero', 'cta'] },
+      items: [{ id: 1, parent: 0, position: 1 }],
+      blocks: ['hero', 'cta'],
+    });
+    const params = new URLSearchParams(body);
+    expect(params.get('areas')).toBe('{"col1":["hero","cta"]}');
+    expect(params.get('items')).toBe('[{"id":1,"parent":0,"position":1}]');
+    expect(params.get('blocks')).toBe('["hero","cta"]');
+  });
 });

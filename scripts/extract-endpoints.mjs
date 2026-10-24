@@ -36,7 +36,8 @@ function parseApiFile(filePath, app, controller) {
 
     const method = routeMatch[1];
     const apiPath = routeMatch[2];
-    let description = '';
+    const descriptionLines = [];
+    const errors = [];
     const queryParams = [];
     let memberOnly = false;
     let clientOnly = false;
@@ -55,6 +56,12 @@ function parseApiFile(filePath, app, controller) {
       if (API_CLIENT.test(line)) {
         clientOnly = true;
       }
+      const thrown = line.match(/^\s*\*\s*@throws\s+(\S+)\s+(\S+)\s*(.*)$/);
+      if (thrown) {
+        const message = thrown[3].trim();
+        errors.push(message ? `${thrown[1]} ${thrown[2]}: ${message}` : `${thrown[1]} ${thrown[2]}`);
+        continue;
+      }
       const paramMatch = line.match(API_PARAM);
       if (paramMatch) {
         const rest = line.replace(API_PARAM, '').trim();
@@ -67,15 +74,20 @@ function parseApiFile(filePath, app, controller) {
             required: paramMatch[1] === 'reqapiparam',
           });
         }
-      } else if (
-        /^\s*\*\s*[^@]/.test(line) &&
-        !/^\s*\*\s*@(apireturn|apiresponse|throws|note|brief)/.test(line)
-      ) {
+      } else {
         const descLine = line.replace(/^\s*\*\s?/, '').trim();
-        if (descLine && !description) {
-          description = descLine;
+        if (descLine && !descLine.startsWith('@')) {
+          descriptionLines.push(descLine);
         }
       }
+    }
+
+    let description = descriptionLines.join(' ').replace(/\s+/g, ' ').trim();
+    if (!description) {
+      description = `${method} ${apiPath}`;
+    }
+    if (app === 'copywritingcourse' && errors.length > 0) {
+      description += ` Errors: ${errors.join('; ')}.`;
     }
 
     const pathParams = [...apiPath.matchAll(/\{([^}]+)\}/g)].map((m) => m[1]);

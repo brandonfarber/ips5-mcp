@@ -133,6 +133,63 @@ Copy-paste patterns: **user question** → **tool** → **example arguments**.
     }
   }
   ```
+- **Visual editor pages:** `POST /copywritingcourse/pages` still defaults to `type=html`. Set `body.type` to `builder` to create a page composed of blocks. Do not send `content` on a builder page (`1CWC/P12`). Do not send `areas` or `blocks` on an HTML page (`1CWC/P13`). The page type cannot be changed later (`1CWC/P5`).
+- **Layout:** `body.areas` replaces the whole layout. Send a list of `{area, blocks}` or a map such as `{"col1":["hero","cta"]}`. Areas you omit are removed, including widgets that are not CMS blocks. `body.blocks` is shorthand that replaces only `col1`. Do not send `areas` and `blocks` together.
+- **Block references:** a key, a numeric ID, or `{"key":"..."}` / `{"id":1}`.
+- **Read back:** builder pages include `areas`. HTML pages include `embedded_blocks` for `{block="key"}` tags. Placements are the same widget-area records the visual editor uses: a `cms` / `Blocks` widget whose configuration is `cms_widget_custom_block` = the block key.
+- **Builder body example:**
+  ```json
+  {
+    "body": {
+      "name": "Home",
+      "type": "builder",
+      "areas": { "col1": ["hero", "cta"] },
+      "ipb_wrapper": true
+    }
+  }
+  ```
+
+### CMS — blocks
+
+**User:** “Create a CMS block” / “Put blocks on a page”
+
+- **List:** `g_cwc_blocks` with optional `query.type` (`custom` or `plugin`), `query.category_id`, `query.key`, and `query.name`.
+- **View one:** `g_cwc_blocks_id`. The response includes `content`, `plugin_config`, and `used_on_pages`.
+- **Create:** `p_cwc_blocks`. `body.name` is required. `type` is `custom` (default) or `plugin`. `editor` is `html` (default) or `editor` for WYSIWYG. PHP blocks cannot be created or updated (`1CWC/B3`).
+- **Plugin blocks:** send `plugin` and `plugin_app`, or set `plugin` to `db_feed_{databaseId}` and omit `plugin_app`. `plugin_config` is a JSON object.
+- **Update:** `p_cwc_blocks_id`. The block type cannot change.
+- **Delete:** `d_cwc_blocks_id`. Returns `409 BLOCK_IN_USE` with page IDs unless `body.force` is `1`. `force=1` deletes the block record and leaves existing page placements in place; those widgets then render empty.
+- **Limit:** content is at most 1MB.
+- Objects and arrays in `body` are sent as JSON. The API decodes a field whose value starts with `{` or `[`.
+
+### CMS — menu manager
+
+**User:** “Update the front navigation menu”
+
+Writes publish the front navigation menu immediately. `p_cwc_menu_publish` rebuilds it again from `core_menu`. `p_cwc_menu_restore` replaces the menu with application defaults and requires `body.confirm` = `1`.
+
+- **Tree:** `g_cwc_menu`. Each item includes `children`.
+- **Addable types:** `g_cwc_menu_types` (`core_CustomItem`, `core_Menu`, `cms_Pages`, and their config fields).
+- **One item:** `g_cwc_menu_id`.
+- **Create:** `p_cwc_menu`. `body.extension` is required.
+- **Update:** `p_cwc_menu_id`. Sent `config` fields merge into the saved config.
+- **Delete:** `d_cwc_menu_id` deletes the item and its children.
+- **Reorder:** `p_cwc_menu_reorder`. `body.items` is a JSON array of `{id, parent, position}`.
+- `title` fills the first translatable field when `config` omits it. `parent` of `0` is the root. A dropdown (`core_Menu`) cannot be nested under another dropdown.
+- `permissions` is `*`, `inherit`, a comma-separated group list, or a JSON array of group IDs. `menu_types` is `*` or a JSON array of `header`, `sidebar`, and `smallscreen`.
+- Error codes run `1CWC/N1`–`N12`, `N16`, `N18` and `2CWC/N13`–`N15`, `N17`, `N19`. `1CWC/N8` is `FIELD_REQUIRED` or `INVALID_CONFIG:menu_content_page`.
+
+### CMS — theme CSS
+
+**User:** “Edit theme custom CSS” / “Change a CSS variable”
+
+`{id}` is a numeric theme ID or `default`.
+
+- **List themes:** `g_cwc_theme`.
+- **One theme:** `g_cwc_theme_id` returns custom CSS, saved CSS variable overrides, and layout options.
+- **Variables:** `g_cwc_theme_id_variables`. Each variable includes `default`, `value`, `custom`, and `writable`.
+- **Update:** `p_cwc_theme_id` with `custom_css`, `css_variables`, and/or `layout`.
+- Custom CSS is limited to 512KB and must compile. A closing `</style` tag or `<?` is rejected. An empty `css_variables` value removes that override. An empty `layout` value removes that option. Image theme settings are read-only (`1CWC/T5`).
 
 ### CMS — media manager
 

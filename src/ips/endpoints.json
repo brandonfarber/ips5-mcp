@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-10T14:51:12.452Z",
+  "generatedAt": "2026-10-24T13:36:16.843Z",
   "source": "C:\\wamp\\www\\invision5",
-  "count": 244,
+  "count": 262,
   "endpoints": [
     {
       "id": "blog/blogs/DELETE_id",
@@ -568,6 +568,28 @@
       "toolName": "d_core_webhooks_id"
     },
     {
+      "id": "copywritingcourse/blocks/DELETE_id",
+      "app": "copywritingcourse",
+      "controller": "blocks",
+      "method": "DELETE",
+      "path": "/copywritingcourse/blocks/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "force",
+          "type": "bool",
+          "description": "Delete the block even when pages still reference it",
+          "required": false
+        }
+      ],
+      "description": "Delete a CMS block. Deletion is refused while a page still uses the block unless force=1. Errors: 1CWC/B1 INVALID_ID: The block does not exist; 1CWC/B13 BLOCK_IN_USE: One or more pages still use this block; 2CWC/B14 DELETE_FAILED: The block could not be deleted.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "d_cwc_blocks_id"
+    },
+    {
       "id": "copywritingcourse/media/DELETE_id",
       "app": "copywritingcourse",
       "controller": "media",
@@ -577,7 +599,7 @@
         "id"
       ],
       "queryParams": [],
-      "description": "Delete a CMS media manager file",
+      "description": "Delete a CMS media manager file Errors: 1CWC/M1 INVALID_ID: The media ID does not exist; 2CWC/M13 DELETE_FAILED: The file could not be deleted.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "d_cwc_media_id"
@@ -592,10 +614,25 @@
         "id"
       ],
       "queryParams": [],
-      "description": "Delete an empty CMS media manager folder",
+      "description": "Delete an empty CMS media manager folder Errors: 1CWC/F1 INVALID_ID: The folder ID does not exist; 1CWC/F8 FOLDER_NOT_EMPTY: The folder still contains files or subfolders; 2CWC/F9 DELETE_FAILED: The folder could not be deleted.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "d_cwc_mediafolders_id"
+    },
+    {
+      "id": "copywritingcourse/menu/DELETE_id",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "DELETE",
+      "path": "/copywritingcourse/menu/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "Delete a menu item, its children, and publish the front navigation menu Errors: 1CWC/N1 INVALID_ID: The menu item does not exist; 2CWC/N15 DELETE_FAILED: The menu item could not be deleted.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "d_cwc_menu_id"
     },
     {
       "id": "copywritingcourse/pages/DELETE_id",
@@ -607,7 +644,7 @@
         "id"
       ],
       "queryParams": [],
-      "description": "Delete a CMS page",
+      "description": "Delete a CMS page Errors: 1CWC/P1 INVALID_ID: The page ID does not exist.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "d_cwc_pages_id"
@@ -1097,7 +1134,7 @@
           "required": false
         }
       ],
-      "description": "@return PaginatedResponse<Comment>",
+      "description": "GET /blog/comments",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "g_blog_cmt"
@@ -2846,6 +2883,71 @@
       "toolName": "g_core_warnrs_id"
     },
     {
+      "id": "copywritingcourse/blocks/GET_index",
+      "app": "copywritingcourse",
+      "controller": "blocks",
+      "method": "GET",
+      "path": "/copywritingcourse/blocks",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "page",
+          "type": "int",
+          "description": "Page number",
+          "required": false
+        },
+        {
+          "name": "perPage",
+          "type": "int",
+          "description": "Number of results per page - defaults to 100",
+          "required": false
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "description": "custom or plugin",
+          "required": false
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "description": "Block category ID",
+          "required": false
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Partial block key match",
+          "required": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Partial name match",
+          "required": false
+        }
+      ],
+      "description": "List CMS blocks",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_blocks"
+    },
+    {
+      "id": "copywritingcourse/blocks/GET_id",
+      "app": "copywritingcourse",
+      "controller": "blocks",
+      "method": "GET",
+      "path": "/copywritingcourse/blocks/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "View a CMS block Errors: 1CWC/B1 INVALID_ID: The block does not exist.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_blocks_id"
+    },
+    {
       "id": "copywritingcourse/media/GET_index",
       "app": "copywritingcourse",
       "controller": "media",
@@ -2899,7 +3001,7 @@
         "id"
       ],
       "queryParams": [],
-      "description": "View a CMS media manager file",
+      "description": "View a CMS media manager file Errors: 1CWC/M1 INVALID_ID: The media ID does not exist.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "g_cwc_media_id"
@@ -2952,10 +3054,51 @@
         "id"
       ],
       "queryParams": [],
-      "description": "View a CMS media manager folder",
+      "description": "View a CMS media manager folder Errors: 1CWC/F1 INVALID_ID: The folder ID does not exist.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "g_cwc_mediafolders_id"
+    },
+    {
+      "id": "copywritingcourse/menu/GET_index",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "GET",
+      "path": "/copywritingcourse/menu",
+      "pathParams": [],
+      "queryParams": [],
+      "description": "Get the front navigation menu as a tree. Writes from this API publish the menu immediately.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_menu"
+    },
+    {
+      "id": "copywritingcourse/menu/GET_id",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "GET",
+      "path": "/copywritingcourse/menu/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "View one menu item, including its children Errors: 1CWC/N1 INVALID_ID: The menu item does not exist.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_menu_id"
+    },
+    {
+      "id": "copywritingcourse/menu/GET_types",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "GET",
+      "path": "/copywritingcourse/menu/types",
+      "pathParams": [],
+      "queryParams": [],
+      "description": "List front navigation item types that can be added in the menu manager",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_menu_types"
     },
     {
       "id": "copywritingcourse/pages/GET_index",
@@ -2993,10 +3136,53 @@
         "id"
       ],
       "queryParams": [],
-      "description": "View details about a CMS page",
+      "description": "View details about a CMS page Errors: 1CWC/P1 INVALID_ID: The page ID does not exist.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "g_cwc_pages_id"
+    },
+    {
+      "id": "copywritingcourse/theme/GET_index",
+      "app": "copywritingcourse",
+      "controller": "theme",
+      "method": "GET",
+      "path": "/copywritingcourse/theme",
+      "pathParams": [],
+      "queryParams": [],
+      "description": "List themes",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_theme"
+    },
+    {
+      "id": "copywritingcourse/theme/GET_id",
+      "app": "copywritingcourse",
+      "controller": "theme",
+      "method": "GET",
+      "path": "/copywritingcourse/theme/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "View a theme, including custom CSS and the CSS variable overrides stored by the theme editor. Use \"default\" to load the default front-end theme. Errors: 1CWC/T1 INVALID_ID: The theme does not exist.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_theme_id"
+    },
+    {
+      "id": "copywritingcourse/theme/GET_id_variables",
+      "app": "copywritingcourse",
+      "controller": "theme",
+      "method": "GET",
+      "path": "/copywritingcourse/theme/{id}/variables",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [],
+      "description": "List theme editor CSS variables, their defaults, and the current override Errors: 1CWC/T1 INVALID_ID: The theme does not exist.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "g_cwc_theme_id_variables"
     },
     {
       "id": "downloads/categories/GET_index",
@@ -7096,6 +7282,186 @@
       "toolName": "p_core_webhooks"
     },
     {
+      "id": "copywritingcourse/blocks/POST_index",
+      "app": "copywritingcourse",
+      "controller": "blocks",
+      "method": "POST",
+      "path": "/copywritingcourse/blocks",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Block name",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Block description",
+          "required": false
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Unique block key. Generated from the name when omitted",
+          "required": false
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "description": "custom (default) or plugin",
+          "required": false
+        },
+        {
+          "name": "editor",
+          "type": "string",
+          "description": "html (default) or editor. editor stores WYSIWYG content",
+          "required": false
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "HTML, WYSIWYG HTML, or a plugin template override",
+          "required": false
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "description": "Category ID. Defaults to the custom or plugin category",
+          "required": false
+        },
+        {
+          "name": "active",
+          "type": "bool",
+          "description": "Defaults to 1",
+          "required": false
+        },
+        {
+          "name": "cache",
+          "type": "bool",
+          "description": "Cache the block output. Defaults to 0",
+          "required": false
+        },
+        {
+          "name": "plugin",
+          "type": "string",
+          "description": "Widget key, such as Blocks, or db_feed_{databaseId}",
+          "required": false
+        },
+        {
+          "name": "plugin_app",
+          "type": "string",
+          "description": "Application that owns the widget",
+          "required": false
+        },
+        {
+          "name": "plugin_config",
+          "type": "string",
+          "description": "JSON object of widget configuration",
+          "required": false
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "description": "Template key to use instead of content",
+          "required": false
+        }
+      ],
+      "description": "Create a CMS block. Custom blocks are HTML or WYSIWYG. Plugin blocks store a widget key and configuration. PHP blocks are not created by this endpoint. Errors: 1CWC/B2 NAME_REQUIRED: Block name is required; 1CWC/B3 INVALID_TYPE: The block type or editor is invalid; 1CWC/B4 INVALID_KEY: The block key is empty or too long; 1CWC/B5 KEY_IN_USE: The block key is already used; 1CWC/B6 INVALID_CATEGORY: The category does not exist; 1CWC/B7 CONTENT_TOO_LARGE: The content is larger than 1MB; 1CWC/B8 INVALID_CONTENT: The content is not valid template HTML or includes itself; 1CWC/B9 PLUGIN_REQUIRED: Plugin blocks need plugin and plugin_app; 1CWC/B10 INVALID_PLUGIN: The widget or database feed does not exist; 2CWC/B11 CREATE_FAILED: The block could not be created.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_blocks"
+    },
+    {
+      "id": "copywritingcourse/blocks/POST_id",
+      "app": "copywritingcourse",
+      "controller": "blocks",
+      "method": "POST",
+      "path": "/copywritingcourse/blocks/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": "Block name",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "description": "Block description",
+          "required": false
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "description": "Unique block key",
+          "required": false
+        },
+        {
+          "name": "editor",
+          "type": "string",
+          "description": "html or editor",
+          "required": false
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "description": "HTML, WYSIWYG HTML, or a plugin template override",
+          "required": false
+        },
+        {
+          "name": "category_id",
+          "type": "int",
+          "description": "Category ID",
+          "required": false
+        },
+        {
+          "name": "active",
+          "type": "bool",
+          "description": "Whether the block is active",
+          "required": false
+        },
+        {
+          "name": "cache",
+          "type": "bool",
+          "description": "Cache the block output",
+          "required": false
+        },
+        {
+          "name": "plugin",
+          "type": "string",
+          "description": "Widget key for a plugin block",
+          "required": false
+        },
+        {
+          "name": "plugin_app",
+          "type": "string",
+          "description": "Application that owns the widget",
+          "required": false
+        },
+        {
+          "name": "plugin_config",
+          "type": "string",
+          "description": "JSON object of widget configuration. Replaces the saved configuration",
+          "required": false
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "description": "Template key. 0 uses the widget default or the content override",
+          "required": false
+        }
+      ],
+      "description": "Update a CMS block. Plugin and custom blocks cannot be switched between types. Errors: 1CWC/B1 INVALID_ID: The block does not exist; 1CWC/B2 NAME_REQUIRED: Block name is empty; 1CWC/B3 INVALID_TYPE: The editor is invalid, or the block type cannot be changed; 1CWC/B4 INVALID_KEY: The block key is empty or too long; 1CWC/B5 KEY_IN_USE: The block key is already used; 1CWC/B6 INVALID_CATEGORY: The category does not exist; 1CWC/B7 CONTENT_TOO_LARGE: The content is larger than 1MB; 1CWC/B8 INVALID_CONTENT: The content is not valid template HTML or includes itself; 1CWC/B10 INVALID_PLUGIN: The widget or database feed does not exist; 2CWC/B12 UPDATE_FAILED: The block could not be updated.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_blocks_id"
+    },
+    {
       "id": "copywritingcourse/media/POST_index",
       "app": "copywritingcourse",
       "controller": "media",
@@ -7134,7 +7500,7 @@
           "required": false
         }
       ],
-      "description": "Upload a CMS media file. Send filename and base64-encoded content (data-URI prefixes are accepted). Use folder_id or folder_path to choose or create the destination folder. Set replace to 1 to overwrite a file with the same filename in that folder.",
+      "description": "Upload a CMS media file. Send filename and base64-encoded content (data-URI prefixes are accepted). Use folder_id or folder_path to choose or create the destination folder. Set replace to 1 to overwrite a file with the same filename in that folder. Errors: 1CWC/M2 NO_FILENAME: Filename is required; 1CWC/M3 NO_CONTENT: File contents are required; 1CWC/M4 INVALID_CONTENT: Content is not valid base64; 1CWC/M5 INVALID_FILE_TYPE: The file type is not allowed in the media manager; 1CWC/M6 FILE_TOO_LARGE: The decoded file is larger than 32MB; 1CWC/M7 INVALID_IMAGE: The file extension is an image type but the contents are not a valid image; 1CWC/M8 FILE_EXISTS: A file with this filename already exists in the destination folder; 1CWC/M9 INVALID_FOLDER: The folder ID or folder path is invalid; 1CWC/M10 SECURITY_EXCEPTION: The file was rejected by the upload security checks; 1CWC/M14 INVALID_FILENAME: The filename is invalid; 1CWC/M15 FOLDER_NAME_IN_USE: A folder in the path already exists under a different parent; 2CWC/M11 UPLOAD_FAILED: The file could not be stored.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_media"
@@ -7174,7 +7540,7 @@
           "required": false
         }
       ],
-      "description": "Replace, rename, or move a CMS media file. Send base64-encoded content to replace the file bytes.",
+      "description": "Replace, rename, or move a CMS media file. Send base64-encoded content to replace the file bytes. Errors: 1CWC/M1 INVALID_ID: The media ID does not exist; 1CWC/M3 NO_CONTENT: File contents are empty; 1CWC/M4 INVALID_CONTENT: Content is not valid base64; 1CWC/M5 INVALID_FILE_TYPE: The file type is not allowed in the media manager; 1CWC/M6 FILE_TOO_LARGE: The decoded file is larger than 32MB; 1CWC/M7 INVALID_IMAGE: The file extension is an image type but the contents are not a valid image; 1CWC/M8 FILE_EXISTS: Another file with this filename already exists in the destination folder; 1CWC/M9 INVALID_FOLDER: The folder ID or folder path is invalid; 1CWC/M10 SECURITY_EXCEPTION: The file was rejected by the upload security checks; 1CWC/M14 INVALID_FILENAME: The filename is invalid; 1CWC/M15 FOLDER_NAME_IN_USE: A folder in the path already exists under a different parent; 2CWC/M12 UPDATE_FAILED: The file could not be updated.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_media_id"
@@ -7200,7 +7566,7 @@
           "required": false
         }
       ],
-      "description": "Create a CMS media manager folder. The name is stored as a friendly URL title, and folder names are unique across the media manager.",
+      "description": "Create a CMS media manager folder. The name is stored as a friendly URL title, and folder names are unique across the media manager. Errors: 1CWC/F2 NAME_REQUIRED: Folder name is required; 1CWC/F3 INVALID_PARENT: The parent folder does not exist or is not a valid parent; 1CWC/F4 NAME_IN_USE: A folder with this name already exists; 1CWC/F5 INVALID_NAME: The folder name is empty or longer than 64 characters after it is converted to a URL title; 2CWC/F6 CREATE_FAILED: The folder could not be created.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_mediafolders"
@@ -7228,10 +7594,189 @@
           "required": false
         }
       ],
-      "description": "Rename or move a CMS media manager folder",
+      "description": "Rename or move a CMS media manager folder Errors: 1CWC/F1 INVALID_ID: The folder ID does not exist; 1CWC/F3 INVALID_PARENT: The parent folder does not exist, or the folder would be moved inside itself; 1CWC/F4 NAME_IN_USE: A folder with this name already exists; 1CWC/F5 INVALID_NAME: The folder name is empty or longer than 64 characters after it is converted to a URL title; 2CWC/F7 UPDATE_FAILED: The folder could not be updated.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_mediafolders_id"
+    },
+    {
+      "id": "copywritingcourse/menu/POST_index",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "POST",
+      "path": "/copywritingcourse/menu",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "extension",
+          "type": "string",
+          "description": "Menu item type, such as core_CustomItem",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Title for custom links, dropdowns, and other translatable fields",
+          "required": false
+        },
+        {
+          "name": "config",
+          "type": "string",
+          "description": "JSON object of extension fields, or a form-encoded array",
+          "required": false
+        },
+        {
+          "name": "parent",
+          "type": "int",
+          "description": "Parent menu item ID. 0 is the root. Children belong under a dropdown menu",
+          "required": false
+        },
+        {
+          "name": "position",
+          "type": "int",
+          "description": "Position among siblings. Defaults to the end",
+          "required": false
+        },
+        {
+          "name": "permissions",
+          "type": "string",
+          "description": "\"*\", \"inherit\", a comma-separated group list, or a JSON array of group IDs",
+          "required": false
+        },
+        {
+          "name": "menu_types",
+          "type": "string",
+          "description": "\"*\" or a JSON array of header, sidebar, and smallscreen",
+          "required": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "description": "JSON icon, either {type:fa,key:\"house:fas\"} or {type:emoji,raw:\"...\"}",
+          "required": false
+        }
+      ],
+      "description": "Add a menu item and publish the front navigation menu. extension is the menu manager type, such as core_CustomItem, core_Menu, or cms_Pages. config uses the field names returned by GET /menu/types. title fills the first translatable field when config omits it. Errors: 1CWC/N2 EXTENSION_REQUIRED: extension is required; 1CWC/N3 INVALID_EXTENSION: The menu type does not exist; 1CWC/N4 EXTENSION_DISABLED: The menu type is not available; 1CWC/N5 EXTENSION_IN_USE: This menu type can only be added once; 1CWC/N6 INVALID_PARENT: The parent does not exist, is not a valid parent, or would create a loop; 1CWC/N7 NESTING_LIMIT: A dropdown menu cannot be nested more than one level deep; 1CWC/N8 FIELD_REQUIRED: A required configuration field is missing; 1CWC/N9 INVALID_PERMISSIONS: The permissions value is invalid; 1CWC/N10 INVALID_MENU_TYPES: A menu location is invalid; 1CWC/N11 INVALID_ICON: The icon value is invalid; 1CWC/N12 VALIDATION_ERROR: The menu extension rejected the configuration; 2CWC/N13 CREATE_FAILED: The menu item could not be created.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_menu"
+    },
+    {
+      "id": "copywritingcourse/menu/POST_id",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "POST",
+      "path": "/copywritingcourse/menu/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "extension",
+          "type": "string",
+          "description": "New menu item type",
+          "required": false
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "Title for the translatable field",
+          "required": false
+        },
+        {
+          "name": "config",
+          "type": "string",
+          "description": "JSON object of extension fields to merge into the saved configuration",
+          "required": false
+        },
+        {
+          "name": "parent",
+          "type": "int",
+          "description": "Parent menu item ID. 0 is the root",
+          "required": false
+        },
+        {
+          "name": "position",
+          "type": "int",
+          "description": "Position among siblings",
+          "required": false
+        },
+        {
+          "name": "permissions",
+          "type": "string",
+          "description": "\"*\", \"inherit\", a comma-separated group list, or a JSON array of group IDs",
+          "required": false
+        },
+        {
+          "name": "menu_types",
+          "type": "string",
+          "description": "\"*\" or a JSON array of header, sidebar, and smallscreen",
+          "required": false
+        },
+        {
+          "name": "icon",
+          "type": "string",
+          "description": "JSON icon. Send null or an empty string to clear it",
+          "required": false
+        }
+      ],
+      "description": "Update a menu item and publish the front navigation menu Errors: 1CWC/N1 INVALID_ID: The menu item does not exist; 1CWC/N3 INVALID_EXTENSION: The menu type does not exist; 1CWC/N4 EXTENSION_DISABLED: The menu type is not available; 1CWC/N5 EXTENSION_IN_USE: This menu type can only be added once; 1CWC/N6 INVALID_PARENT: The parent does not exist, is not a valid parent, or would create a loop; 1CWC/N7 NESTING_LIMIT: A dropdown menu cannot be nested more than one level deep; 1CWC/N8 FIELD_REQUIRED: A required configuration field is missing; 1CWC/N9 INVALID_PERMISSIONS: The permissions value is invalid; 1CWC/N10 INVALID_MENU_TYPES: A menu location is invalid; 1CWC/N11 INVALID_ICON: The icon value is invalid; 1CWC/N12 VALIDATION_ERROR: The menu extension rejected the configuration; 2CWC/N14 UPDATE_FAILED: The menu item could not be updated.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_menu_id"
+    },
+    {
+      "id": "copywritingcourse/menu/POST_publish",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "POST",
+      "path": "/copywritingcourse/menu/publish",
+      "pathParams": [],
+      "queryParams": [],
+      "description": "Rebuild the published front navigation menu from the menu manager records",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_menu_publish"
+    },
+    {
+      "id": "copywritingcourse/menu/POST_reorder",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "POST",
+      "path": "/copywritingcourse/menu/reorder",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "items",
+          "type": "string",
+          "description": "JSON array of menu items to move",
+          "required": true
+        }
+      ],
+      "description": "Move or reorder menu items and publish the front navigation menu. Send items as a JSON array of {id, parent, position}. Omitted parent or position values stay unchanged. Errors: 1CWC/N16 ITEMS_REQUIRED: items is required; 1CWC/N1 INVALID_ID: A menu item does not exist; 1CWC/N6 INVALID_PARENT: A parent does not exist or would create a loop; 1CWC/N7 NESTING_LIMIT: A dropdown menu cannot be nested more than one level deep; 2CWC/N17 REORDER_FAILED: The menu could not be reordered.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_menu_reorder"
+    },
+    {
+      "id": "copywritingcourse/menu/POST_restore",
+      "app": "copywritingcourse",
+      "controller": "menu",
+      "method": "POST",
+      "path": "/copywritingcourse/menu/restore",
+      "pathParams": [],
+      "queryParams": [
+        {
+          "name": "confirm",
+          "type": "bool",
+          "description": "Must be 1 to restore the default menu",
+          "required": true
+        }
+      ],
+      "description": "Replace the menu with the application defaults and publish it. Send confirm=1. Errors: 1CWC/N18 CONFIRM_REQUIRED: confirm=1 is required; 2CWC/N19 RESTORE_FAILED: The default menu could not be restored.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_menu_restore"
     },
     {
       "id": "copywritingcourse/pages/POST_index",
@@ -7248,6 +7793,12 @@
           "required": true
         },
         {
+          "name": "type",
+          "type": "string",
+          "description": "html (default) or builder",
+          "required": false
+        },
+        {
           "name": "seo_name",
           "type": "string",
           "description": "Friendly URL filename",
@@ -7262,7 +7813,19 @@
         {
           "name": "content",
           "type": "string",
-          "description": "Raw HTML page content",
+          "description": "Raw HTML page content. HTML pages only",
+          "required": false
+        },
+        {
+          "name": "areas",
+          "type": "string",
+          "description": "JSON list of visual editor areas. Each area has area and blocks. Replaces the whole layout",
+          "required": false
+        },
+        {
+          "name": "blocks",
+          "type": "string",
+          "description": "Shorthand for the col1 area. A list of block keys or IDs. Do not send this with areas",
           "required": false
         },
         {
@@ -7314,7 +7877,7 @@
           "required": false
         }
       ],
-      "description": "Create a raw HTML CMS page",
+      "description": "Create a CMS page. type=html creates a raw HTML page. type=builder creates a visual editor page composed of blocks. Errors: 1CWC/P2 NAME_REQUIRED: Page name is required; 1CWC/P3 VALIDATION_ERROR: Page validation failed; 1CWC/P5 INVALID_PAGE_TYPE: type must be html or builder; 1CWC/P10 INVALID_BLOCK: A block in the layout does not exist; 1CWC/P11 INVALID_AREAS: The areas or blocks payload is invalid; 1CWC/P12 CONTENT_REQUIRES_HTML_PAGE: content is only stored on raw HTML pages; 1CWC/P13 AREAS_REQUIRE_BUILDER: areas and blocks are only stored on visual editor pages; 1CWC/P14 INVALID_AREA: An area ID is invalid.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_pages"
@@ -7350,7 +7913,19 @@
         {
           "name": "content",
           "type": "string",
-          "description": "Raw HTML page content",
+          "description": "Raw HTML page content. HTML pages only",
+          "required": false
+        },
+        {
+          "name": "areas",
+          "type": "string",
+          "description": "JSON list of visual editor areas. Replaces the whole layout",
+          "required": false
+        },
+        {
+          "name": "blocks",
+          "type": "string",
+          "description": "Shorthand that replaces the col1 area with these blocks",
           "required": false
         },
         {
@@ -7402,10 +7977,44 @@
           "required": false
         }
       ],
-      "description": "Update a raw HTML CMS page",
+      "description": "Update a CMS page. Visual editor pages accept areas or blocks instead of raw HTML content. Errors: 1CWC/P1 INVALID_ID: The page ID does not exist; 1CWC/P5 INVALID_PAGE_TYPE: The page type does not match this page; 1CWC/P6 VALIDATION_ERROR: Page validation failed; 1CWC/P10 INVALID_BLOCK: A block in the layout does not exist; 1CWC/P11 INVALID_AREAS: The areas or blocks payload is invalid; 1CWC/P12 CONTENT_REQUIRES_HTML_PAGE: content is only stored on raw HTML pages; 1CWC/P13 AREAS_REQUIRE_BUILDER: areas and blocks are only stored on visual editor pages; 1CWC/P14 INVALID_AREA: An area ID is invalid.",
       "memberOnly": false,
       "clientOnly": false,
       "toolName": "p_cwc_pages_id"
+    },
+    {
+      "id": "copywritingcourse/theme/POST_id",
+      "app": "copywritingcourse",
+      "controller": "theme",
+      "method": "POST",
+      "path": "/copywritingcourse/theme/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "queryParams": [
+        {
+          "name": "custom_css",
+          "type": "string",
+          "description": "Custom CSS source. Send an empty string to clear it",
+          "required": false
+        },
+        {
+          "name": "css_variables",
+          "type": "string",
+          "description": "JSON object of CSS variable overrides",
+          "required": false
+        },
+        {
+          "name": "layout",
+          "type": "string",
+          "description": "JSON object of layout options. An empty value removes that option",
+          "required": false
+        }
+      ],
+      "description": "Update custom CSS, CSS variable overrides, or layout options for a theme. Use \"default\" to update the default front-end theme. An empty css_variables value removes that override. Image variables are left unchanged. Errors: 1CWC/T1 INVALID_ID: The theme does not exist; 1CWC/T2 INVALID_CSS: The custom CSS contains a closing style tag or PHP, or it could not be compiled; 1CWC/T3 CSS_TOO_LARGE: The custom CSS is larger than 512KB; 1CWC/T4 INVALID_CSS_VARIABLE: A CSS variable key or value is invalid; 1CWC/T5 IMAGE_VARIABLE_UNSUPPORTED: Image theme settings cannot be changed by this endpoint; 1CWC/T6 INVALID_LAYOUT: A layout value is invalid; 2CWC/T7 UPDATE_FAILED: The theme could not be saved.",
+      "memberOnly": false,
+      "clientOnly": false,
+      "toolName": "p_cwc_theme_id"
     },
     {
       "id": "downloads/categories/POST_index",

@@ -61,6 +61,7 @@ function registerMetaTools(server: McpServer): void {
           path: e.path,
           description: e.description,
           pathParams: e.pathParams,
+          queryParams: e.queryParams,
           memberOnly: e.memberOnly,
           clientOnly: e.clientOnly,
         })),

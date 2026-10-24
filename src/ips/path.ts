@@ -39,9 +39,7 @@ export function encodeFormBody(body: Record<string, unknown>): string {
       continue;
     }
     if (Array.isArray(value)) {
-      for (const item of value) {
-        params.append(key, String(item));
-      }
+      params.set(key, JSON.stringify(value));
     } else if (typeof value === 'boolean') {
       params.set(key, value ? '1' : '0');
     } else if (typeof value === 'object') {

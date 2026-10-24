@@ -1,6 +1,6 @@
 # ips5-mcp
 
-[MCP](https://modelcontextprotocol.io/) server for **Invision Community 5** [REST API](https://invisioncommunity.com/__old/buy/developers/rest-api/index/). Exposes **234 endpoint-specific tools** (from the `invision5` codebase) plus discovery and generic call helpers.
+[MCP](https://modelcontextprotocol.io/) server for **Invision Community 5** [REST API](https://invisioncommunity.com/__old/buy/developers/rest-api/index/). Exposes **262 endpoint-specific tools** (from the `invision5` codebase) plus discovery and generic call helpers.
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ Restart MCP after editing docs.
 | `g_core_hello` | Same as above (catalog name) |
 | `ips_list_endpoints` | Search/filter the endpoint catalog |
 | `ips_api_call` | Arbitrary REST call (`method`, `path`, `query`, `body`) |
-| `g_` / `p_` / `u_` / `d_` + path | One tool per documented endpoint (234 total) |
+| `g_` / `p_` / `u_` / `d_` + path | One tool per documented endpoint (262 total) |
 
 Tool names are kept short for **Cursor’s 60-character combined server+tool limit**: use a short MCP server key in `.cursor/mcp.json` (e.g. `"ip"`), single-letter HTTP prefixes (`g_` GET, `p_` POST, `u_` PUT, `d_` DELETE), segment abbreviations, and duplicate collapse. Logic: `src/ips/tool-name.ts`; run `npm run refresh-tool-names` after edits.
 

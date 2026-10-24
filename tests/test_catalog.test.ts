@@ -34,7 +34,9 @@ describe('endpoint catalog', () => {
       app: 'copywritingcourse',
       method: 'POST',
       path: '/copywritingcourse/pages',
-      description: 'Create a raw HTML CMS page',
+      description: expect.stringContaining(
+        'type=html creates a raw HTML page. type=builder creates a visual editor page composed of blocks.',
+      ),
     });
     expect(createPage?.queryParams).toEqual(
       expect.arrayContaining([
@@ -47,6 +49,9 @@ describe('endpoint catalog', () => {
           name: 'content',
           type: 'string',
         }),
+        expect.objectContaining({ name: 'type', required: false }),
+        expect.objectContaining({ name: 'areas', required: false }),
+        expect.objectContaining({ name: 'blocks', required: false }),
       ]),
     );
 
@@ -98,5 +103,47 @@ describe('endpoint catalog', () => {
         'd_cwc_mediafolders_id',
       ]),
     );
+  });
+
+  test('includes copywritingcourse menu, theme, and block endpoints', () => {
+    const tools = filterEndpoints({ app: 'copywritingcourse', limit: 100 }).map(
+      (endpoint) => endpoint.toolName,
+    );
+    expect(tools).toEqual(
+      expect.arrayContaining([
+        'g_cwc_menu',
+        'g_cwc_menu_types',
+        'g_cwc_menu_id',
+        'p_cwc_menu',
+        'p_cwc_menu_id',
+        'd_cwc_menu_id',
+        'p_cwc_menu_reorder',
+        'p_cwc_menu_publish',
+        'p_cwc_menu_restore',
+        'g_cwc_theme',
+        'g_cwc_theme_id',
+        'g_cwc_theme_id_variables',
+        'p_cwc_theme_id',
+        'g_cwc_blocks',
+        'g_cwc_blocks_id',
+        'p_cwc_blocks',
+        'p_cwc_blocks_id',
+        'd_cwc_blocks_id',
+      ]),
+    );
+
+    expect(getEndpointByToolName('p_cwc_menu')?.queryParams).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: 'extension', required: true }),
+        expect.objectContaining({ name: 'permissions' }),
+        expect.objectContaining({ name: 'menu_types' }),
+      ]),
+    );
+    expect(getEndpointByToolName('p_cwc_menu_restore')?.description).toContain('confirm=1');
+    expect(getEndpointByToolName('p_cwc_blocks')?.description).toContain('PHP blocks are not created');
+    expect(getEndpointByToolName('d_cwc_blocks_id')?.queryParams).toEqual(
+      expect.arrayContaining([expect.objectContaining({ name: 'force' })]),
+    );
+    expect(getEndpointByToolName('p_cwc_theme_id')?.description).toContain('css_variables');
   });
 });

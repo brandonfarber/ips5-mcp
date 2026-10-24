@@ -28,6 +28,10 @@ describe('buildToolName', () => {
   test('abbreviates copywritingcourse app', () => {
     expect(buildToolName('POST', '/copywritingcourse/pages')).toBe('p_cwc_pages');
     expect(buildToolName('GET', '/copywritingcourse/pages/{id}')).toBe('g_cwc_pages_id');
+    expect(buildToolName('GET', '/copywritingcourse/theme/{id}/variables')).toBe(
+      'g_cwc_theme_id_variables',
+    );
+    expect(buildToolName('POST', '/copywritingcourse/menu/reorder')).toBe('p_cwc_menu_reorder');
   });
 
   test('shortens member warning acknowledge path for Cursor limit', () => {
