@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - npm
 - IPS5 community with REST API key (ACP → System → REST & OAuth)
 

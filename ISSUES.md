@@ -17,6 +17,7 @@
 
 ## Resolved
 
+- 2026-10-24: Runtime requirement moved from Node.js 18+ to Node.js 22+ (`package.json` `engines`, README). The image was already `node:22-alpine`. `npm audit` reported 17 vulnerabilities (2 critical, 10 high); after updates it reports 0. Direct floors are now MCP SDK ^1.32.2, Express ^5.3.0, and Zod ^4.6.7. Zod 3 has no patch for GHSA-mrhx-c7xc-m3w5, so tool input schemas use Zod 4 `z.record(key, value)`. Jest 30, TypeScript 7, dotenv 18, and `@types/node` 26 were left on their current majors; they were not required for Node 22 or the audit.
 - 2026-06-02: `POST /copywritingcourse/pages` initially returned empty/root URL data; latest site patch confirmed create now returns `full_path` and page-specific `url` directly (`https://kopywriting.com/brandontesttest/` in test), and follow-up GET matches.
 - 2026-06-02: Shortened MCP endpoint tool names for Cursor’s 60-char **server+tool** limit (`g_`/`p_`/`u_`/`d_` prefixes, segment abbreviations, `.cursor/mcp.json` server key `ip`). Re-run `npm run build` and reload MCP after pull.
 - 2026-06-02: First pass shortened names (`ips_del_*`, `cwc`, etc.); superseded by `g_`/`p_`/`d_` scheme above.

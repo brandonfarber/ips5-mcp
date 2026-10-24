@@ -7,12 +7,12 @@ import { IpsRestClient } from '../ips/client.js';
 import { errorResult, jsonResult, missingCredentialsResult } from './results.js';
 
 const querySchema = z
-  .record(z.union([z.string(), z.number(), z.boolean()]))
+  .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
   .optional()
   .describe('Query string parameters (@apiparam from IPS docs)');
 
 const bodySchema = z
-  .record(z.unknown())
+  .record(z.string(), z.unknown())
   .optional()
   .describe('Form body for POST/PUT (application/x-www-form-urlencoded)');
 

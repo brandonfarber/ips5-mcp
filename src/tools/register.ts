@@ -79,10 +79,10 @@ function registerMetaTools(server: McpServer): void {
           .string()
           .describe('API path under /api, e.g. /core/hello or /forums/topics/42'),
         query: z
-          .record(z.union([z.string(), z.number(), z.boolean()]))
+          .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
           .optional()
           .describe('Query string parameters'),
-        body: z.record(z.unknown()).optional().describe('Form body for POST/PUT/DELETE'),
+        body: z.record(z.string(), z.unknown()).optional().describe('Form body for POST/PUT/DELETE'),
       }),
     },
     async (args) => {
